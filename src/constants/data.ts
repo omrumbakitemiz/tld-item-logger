@@ -3,20 +3,20 @@ export type Item = (typeof items)[number];
 export type Region = (typeof regions)[number];
 
 export const regions = [
-  { id: 1, name: 'Ash Canyon', imageSrc: '/regions/ash-canyon.webp' },
-  { id: 2, name: 'Blackrock', imageSrc: '/regions/blackrock.webp' },
-  { id: 3, name: 'Bleak Inlet', imageSrc: '/regions/bleak-inlet.webp' },
-  { id: 4, name: 'Broken Railroad', imageSrc: '/regions/broken-railroad.webp' },
-  { id: 5, name: 'Coastal Highway', imageSrc: '/regions/coastal-highway.webp' },
-  { id: 6, name: 'Desolation Point', imageSrc: '/regions/desolation-point.webp' },
-  { id: 7, name: 'Far Range Branch Line', imageSrc: '/regions/far-range-branch-line.webp' },
-  { id: 8, name: 'Forlorn Muskeg', imageSrc: '/regions/forlorn-muskeg.webp' },
-  { id: 9, name: 'Hushed River Valley', imageSrc: '/regions/hushed-river-valley.webp' },
-  { id: 10, name: 'Mountain Town', imageSrc: '/regions/mountain-town.webp' },
-  { id: 11, name: 'Mystery Lake', imageSrc: '/regions/mystery-lake.webp' },
-  { id: 12, name: 'Plesant Valley', imageSrc: '/regions/plesant-walley.webp' },
-  { id: 13, name: 'Timberwolf Mountain', imageSrc: '/regions/timberwolf-mountain.webp' },
-  { id: 14, name: 'Transfer Pass', imageSrc: '/regions/transfer-pass.webp' },
+  { id: 1, name: 'Ash Canyon', imageSrc: '/regions/optimized-jpg/ash-canyon.jpg' },
+  { id: 2, name: 'Blackrock', imageSrc: '/regions/optimized-jpg/blackrock.jpg' },
+  { id: 3, name: 'Bleak Inlet', imageSrc: '/regions/optimized-jpg/bleak-inlet.jpg' },
+  { id: 4, name: 'Broken Railroad', imageSrc: '/regions/optimized-jpg/broken-railroad.jpg' },
+  { id: 5, name: 'Coastal Highway', imageSrc: '/regions/optimized-jpg/coastal-highway.jpg' },
+  { id: 6, name: 'Desolation Point', imageSrc: '/regions/optimized-jpg/desolation-point.jpg' },
+  { id: 7, name: 'Far Range Branch Line', imageSrc: '/regions/optimized-jpg/far-range-branch-line.jpg' },
+  { id: 8, name: 'Forlorn Muskeg', imageSrc: '/regions/optimized-jpg/forlorn-muskeg.jpg' },
+  { id: 9, name: 'Hushed River Valley', imageSrc: '/regions/optimized-jpg/hushed-river-valley.jpg' },
+  { id: 10, name: 'Mountain Town', imageSrc: '/regions/optimized-jpg/mountain-town.jpg' },
+  { id: 11, name: 'Mystery Lake', imageSrc: '/regions/optimized-jpg/mystery-lake.jpg' },
+  { id: 12, name: 'Plesant Valley', imageSrc: '/regions/optimized-jpg/plesant-walley.jpg' },
+  { id: 13, name: 'Timberwolf Mountain', imageSrc: '/regions/optimized-jpg/timberwolf-mountain.jpg' },
+  { id: 14, name: 'Transfer Pass', imageSrc: '/regions/optimized-jpg/transfer-pass.jpg' },
 ];
 
 export const items = [

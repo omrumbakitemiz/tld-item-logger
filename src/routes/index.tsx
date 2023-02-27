@@ -49,6 +49,7 @@ export default component$(() => {
             src={currentRegion.value?.imageSrc}
             width="550px"
             alt="map-image"
+            loading="lazy"
           />
         </div>
         {/* Item Area */}
@@ -59,6 +60,7 @@ export default component$(() => {
                 <img
                   draggable
                   src={item.path}
+                  loading="lazy"
                   alt="item-image"
                   width="50px"
                   onDragStart$={(event: any) => onDragStart(event, item)}
