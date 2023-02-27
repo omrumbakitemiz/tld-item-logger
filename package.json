@@ -40,9 +40,7 @@
     "undici": "5.20.0",
     "vercel": "^28.4.17",
     "vite": "4.1.4",
-    "vite-tsconfig-paths": "3.5.0"
-  },
-  "dependencies": {
+    "vite-tsconfig-paths": "3.5.0",
     "@tailwindcss/typography": "^0.5.9",
     "daisyui": "^2.51.1"
   }
