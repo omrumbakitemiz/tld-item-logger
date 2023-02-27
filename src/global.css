@@ -13,10 +13,3 @@
 body {
   height: 100vh;
 }
-
-.droptarget {
-  width: 100px;
-  height: 35px;
-  padding: 10px;
-  border: 1px solid black;
-}

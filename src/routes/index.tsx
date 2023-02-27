@@ -15,7 +15,9 @@ export default component$(() => {
 
   const drop = $((event: DragEvent) => {
     event.preventDefault();
-    console.log('drop event: ', currentDragItem.value);
+    console.log('drop item: ', currentDragItem.value);
+    console.log('drop region: ', currentRegion.value);
+    console.log('drop event: ', event);
   });
 
   const onDragStart = $((event: any, item: Item) => {
@@ -27,19 +29,14 @@ export default component$(() => {
       <div class="flex justify-between px-6 py-4">
         <div>
           {/* Map Selection */}
-          <div class="dropdown">
-            <label tabIndex={0} class="btn">
-              Maps
-            </label>
-            <ul tabIndex={0} class="p-2 shadow dropdown-content menu bg-base-100 w-52">
-              {regions.map((region) => (
-                <li class="flex" onClick$={() => (currentRegion.value = region)}>
-                  <img src={region.imageSrc} alt={region.name + ' image'} width="100px" />
-                  <a>{region.name}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <select class="select w-full max-w-xs bg-gray-800">
+            <option disabled selected>
+              Pick Map
+            </option>{' '}
+            {regions.map((region) => (
+              <option onClick$={() => (currentRegion.value = region)}>{region.name}</option>
+            ))}
+          </select>
 
           {/* Map Area */}
           <img
@@ -53,7 +50,7 @@ export default component$(() => {
           />
         </div>
         {/* Item Area */}
-        <div class="grid grid-cols-3 gap-4 max-w-[300px] max-h-[650px] overflow-y-scroll overflow-x-hidden mt-11 px-2">
+        <div class="grid grid-cols-3 gap-4 max-w-[300px] max-h-[650px] overflow-y-scroll overflow-x-hidden pt-11 px-2">
           {items.map((item) => (
             <div class="tooltip" data-tip={item.name}>
               <button class="btn">
