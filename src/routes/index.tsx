@@ -9,6 +9,10 @@ export default component$(() => {
   const ashCanyon = regions[0];
   const currentRegion = useSignal<Region | null>(ashCanyon);
 
+  const currentQuality = useSignal<'low' | 'high'>('low');
+
+  const mapRef = useSignal<HTMLImageElement>();
+
   const allowDrop = $((event: any) => {
     event.preventDefault();
   });
@@ -22,6 +26,17 @@ export default component$(() => {
 
   const onDragStart = $((event: any, item: Item) => {
     currentDragItem.value = item;
+  });
+
+  const upgradeMapImage = $(() => {
+    if (currentQuality.value === 'low') {
+      currentQuality.value = 'high';
+
+      const newImageSrc = `${currentRegion.value?.imageSrc.replace('low', 'high')}`;
+      if (mapRef.value) {
+        mapRef.value.src = newImageSrc;
+      }
+    }
   });
 
   return (
@@ -47,6 +62,8 @@ export default component$(() => {
             width="550px"
             height="640px"
             alt="map-image"
+            onLoad$={upgradeMapImage}
+            ref={mapRef}
           />
         </div>
         {/* Item Area */}
@@ -59,6 +76,7 @@ export default component$(() => {
                   src={item.path}
                   alt="item-image"
                   width="50px"
+                  height="50px"
                   onDragStart$={(event: any) => onDragStart(event, item)}
                 />
               </button>
