@@ -29,14 +29,16 @@ export default component$(() => {
   });
 
   const upgradeMapImage = $(() => {
-    if (currentQuality.value === 'low') {
-      currentQuality.value = 'high';
+    setTimeout(() => {
+      if (currentQuality.value === 'low') {
+        currentQuality.value = 'high';
 
-      const newImageSrc = `${currentRegion.value?.imageSrc.replace('low', 'high')}`;
-      if (mapRef.value) {
-        mapRef.value.src = newImageSrc;
+        const newImageSrc = `${currentRegion.value?.imageSrc.replace('low', 'high')}`;
+        if (mapRef.value) {
+          mapRef.value.src = newImageSrc;
+        }
       }
-    }
+    }, 1000);
   });
 
   return (
