@@ -20,7 +20,7 @@ export const useAddToListAction = action$(
   },
   zod$({
     text: z.string(),
-  })
+  }),
 );
 
 export default component$(() => {
