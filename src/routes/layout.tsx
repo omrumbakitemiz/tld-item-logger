@@ -15,7 +15,8 @@ export default component$(() => {
         <a href="https://github.com/omrumbakitemiz" target="_blank">
           Made with ❤️ by @immino{' '}
         </a>{' '}
-        @{new Date().getFullYear()} - {process.env.NODE_ENV}.{import.meta.env.PACKAGE_VERSION}
+        @{new Date().getFullYear()} - {import.meta.env.VITE_VERCEL_ENV}.
+        {import.meta.env.PACKAGE_VERSION.replace('"', '')}
       </footer>
     </div>
   );
