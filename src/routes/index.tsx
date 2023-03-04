@@ -22,6 +22,21 @@ export default component$(() => {
     console.log('drop item: ', currentDragItem.value);
     console.log('drop region: ', currentRegion.value);
     console.log('drop event: ', event);
+
+    const xCoordinate = event.offsetX - 5;
+    const yCoordinate = event.offsetY - 5;
+
+    const img = document.createElement('img');
+    img.style.position = 'absolute';
+    img.style.top = `${yCoordinate}px`;
+    img.style.left = `${xCoordinate}px`;
+    img.style.width = '20px';
+    img.style.height = '20px';
+    img.src = currentDragItem.value?.path || '';
+    img.style.borderRadius = '50%';
+    img.style.zIndex = '1000';
+
+    document.getElementById('map-image')?.appendChild(img);
   });
 
   const onDragStart = $((event: any, item: Item) => {
@@ -54,19 +69,19 @@ export default component$(() => {
               <option onClick$={() => (currentRegion.value = region)}>{region.name}</option>
             ))}
           </select>
-
           {/* Map Area */}
-          <img
-            class="cursor-pointer"
-            onDrop$={(event: any) => drop(event)}
-            onDragOver$={(event) => allowDrop(event)}
-            src={currentRegion.value?.imageSrc}
-            width="550px"
-            height="640px"
-            alt="map-image"
-            onLoad$={upgradeMapImage}
-            ref={mapRef}
-          />
+          <div class="cursor-pointer relative" id="map-image">
+            <img
+              onDrop$={(event: any) => drop(event)}
+              onDragOver$={(event) => allowDrop(event)}
+              src={currentRegion.value?.imageSrc}
+              width="550px"
+              height="640px"
+              alt="map-image"
+              onLoad$={upgradeMapImage}
+              ref={mapRef}
+            />
+          </div>
         </div>
         {/* Item Area */}
         <div class="grid grid-cols-3 gap-4 max-w-[300px] max-h-[650px] overflow-y-scroll overflow-x-hidden pt-11 px-2">
