@@ -13,8 +13,9 @@ export default component$(() => {
       </main>
       <footer class="w-full text-center py-2">
         <a href="https://github.com/omrumbakitemiz" target="_blank">
-          Made with ❤️ by @immino
-        </a>
+          Made with ❤️ by @immino{' '}
+        </a>{' '}
+        @{new Date().getFullYear()} - {process.env.NODE_ENV}.{import.meta.env.PACKAGE_VERSION}
       </footer>
     </div>
   );
