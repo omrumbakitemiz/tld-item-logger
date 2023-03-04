@@ -1,4 +1,4 @@
-import { $, component$, useSignal } from '@builder.io/qwik';
+import { $, component$, useSignal, useStore } from '@builder.io/qwik';
 import type { DocumentHead } from '@builder.io/qwik-city';
 import type { Item, Region } from '~/constants/data';
 import { items, regions } from '~/constants/data';
@@ -17,11 +17,10 @@ export default component$(() => {
     event.preventDefault();
   });
 
+  const pins = useStore<{ item?: Item | null; count?: number; coordinates?: { x: number; y: number } }[]>([]);
+
   const drop = $((event: DragEvent) => {
     event.preventDefault();
-    console.log('drop item: ', currentDragItem.value);
-    console.log('drop region: ', currentRegion.value);
-    console.log('drop event: ', event);
 
     const xCoordinate = event.offsetX - 5;
     const yCoordinate = event.offsetY - 5;
@@ -37,6 +36,14 @@ export default component$(() => {
     img.style.zIndex = '1000';
 
     document.getElementById('map-image')?.appendChild(img);
+
+    pins.push({
+      item: currentDragItem.value,
+      coordinates: {
+        x: xCoordinate,
+        y: yCoordinate,
+      },
+    });
   });
 
   const onDragStart = $((event: any, item: Item) => {
@@ -44,6 +51,7 @@ export default component$(() => {
   });
 
   const upgradeMapImage = $(() => {
+    console.log('upgradeMapImage');
     setTimeout(() => {
       if (currentQuality.value === 'low') {
         currentQuality.value = 'high';
@@ -82,6 +90,19 @@ export default component$(() => {
               ref={mapRef}
             />
           </div>
+
+          <br />
+
+          <p>
+            pin count: <span>{pins.length}</span>
+          </p>
+
+          <p>
+            currentMapImage quality:{' '}
+            <span class={currentQuality.value === 'high' ? 'text-green-500' : 'text-red-500'}>
+              {currentQuality.value}
+            </span>
+          </p>
         </div>
         {/* Item Area */}
         <div class="grid grid-cols-3 gap-4 max-w-[300px] max-h-[650px] overflow-y-scroll overflow-x-hidden pt-11 px-2">
@@ -106,11 +127,11 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-  title: 'Welcome to Qwik',
+  title: 'TLD Item Logger',
   meta: [
     {
       name: 'description',
-      content: 'Qwik site description',
+      content: 'The Long Dark Item Logger',
     },
   ],
 };
