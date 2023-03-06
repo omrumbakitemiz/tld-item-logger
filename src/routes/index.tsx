@@ -1,7 +1,23 @@
-import { $, component$, useSignal, useStore } from '@builder.io/qwik';
+import { $, component$, useBrowserVisibleTask$, useSignal, useStore } from '@builder.io/qwik';
 import type { DocumentHead } from '@builder.io/qwik-city';
 import type { Item, Region } from '~/constants/data';
 import { items, regions } from '~/constants/data';
+
+interface Pin {
+  item?: Item | null;
+  count?: number;
+  coordinate?: { x: number; y: number };
+  mapSize: { width: number; height: number };
+}
+
+function debounce(f: any, delay: any) {
+  let timer = 0;
+  return function (...args: any) {
+    clearTimeout(timer);
+    // @ts-ignore
+    timer = setTimeout(() => f.apply(this, args), delay);
+  };
+}
 
 export default component$(() => {
   const currentDragItem = useSignal<Item | null>(null);
@@ -17,33 +33,30 @@ export default component$(() => {
     event.preventDefault();
   });
 
-  const pins = useStore<{ item?: Item | null; count?: number; coordinates?: { x: number; y: number } }[]>([]);
+  const pinStore = useStore<{ pins: Pin[] }>({ pins: [] });
 
   const drop = $((event: DragEvent) => {
-    event.preventDefault();
+    if (mapRef.value) {
+      event.preventDefault();
 
-    const xCoordinate = event.offsetX - 5;
-    const yCoordinate = event.offsetY - 5;
+      const xCoordinate = event.offsetX - 5;
+      const yCoordinate = event.offsetY - 5;
 
-    const img = document.createElement('img');
-    img.style.position = 'absolute';
-    img.style.top = `${yCoordinate}px`;
-    img.style.left = `${xCoordinate}px`;
-    img.style.width = '20px';
-    img.style.height = '20px';
-    img.src = currentDragItem.value?.path || '';
-    img.style.borderRadius = '50%';
-    img.style.zIndex = '1000';
-
-    document.getElementById('map-image')?.appendChild(img);
-
-    pins.push({
-      item: currentDragItem.value,
-      coordinates: {
-        x: xCoordinate,
-        y: yCoordinate,
-      },
-    });
+      pinStore.pins = [
+        ...pinStore.pins,
+        {
+          item: currentDragItem.value,
+          coordinate: {
+            x: xCoordinate,
+            y: yCoordinate,
+          },
+          mapSize: {
+            width: mapRef.value.clientWidth,
+            height: mapRef.value.clientHeight,
+          },
+        },
+      ];
+    }
   });
 
   const onDragStart = $((event: any, item: Item) => {
@@ -62,6 +75,76 @@ export default component$(() => {
         }
       }
     }, 1000);
+  });
+
+  useBrowserVisibleTask$(() => {
+    const ro = new ResizeObserver(
+      debounce((entries: any) => {
+        for (const entry of entries) {
+          const cr = entry.contentRect;
+          const newPins = pinStore.pins.map((pin) => {
+            if (pin.coordinate) {
+              console.log('coordinate', pin.coordinate.x, pin.coordinate.y);
+
+              const newXCoordinate = (cr.width / pin.mapSize.width) * pin.coordinate.x;
+              const newYCoordinate = (cr.height / pin.mapSize.height) * pin.coordinate.y;
+
+              console.log('new coordinate', newXCoordinate, newYCoordinate);
+
+              pin.coordinate.x = newXCoordinate;
+              pin.coordinate.y = newYCoordinate;
+              pin.mapSize.width = cr.width;
+              pin.mapSize.height = cr.height;
+            }
+
+            return pin;
+          });
+
+          pinStore.pins = newPins;
+        }
+      }, 1000),
+    );
+
+    if (mapRef.value) {
+      ro.observe(mapRef.value);
+    }
+
+    return () => ro.disconnect();
+  });
+
+  useBrowserVisibleTask$(({ track }) => {
+    track(() => pinStore.pins);
+
+    console.log('pinStore.pins', pinStore.pins);
+
+    const mapImageElement = document.getElementById('map-image');
+
+    if (mapImageElement) {
+      // remove all child nodes that don't have the data-map-image attribute
+      const childNodes = Array.from(mapImageElement.childNodes) as HTMLElement[];
+      childNodes.forEach((node) => {
+        if (!node.hasAttribute('data-map-image')) {
+          mapImageElement.removeChild(node);
+        }
+      });
+
+      pinStore.pins.forEach((pin) => {
+        if (pin.coordinate) {
+          const img = document.createElement('img');
+          img.style.position = 'absolute';
+          img.draggable = false;
+          img.style.top = `${pin.coordinate.y}px`;
+          img.style.left = `${pin.coordinate.x}px`;
+          img.style.width = '20px';
+          img.style.height = '20px';
+          img.src = currentDragItem.value?.path || '';
+          img.style.borderRadius = '50%';
+          img.style.zIndex = '1000';
+
+          mapImageElement.appendChild(img);
+        }
+      });
+    }
   });
 
   return (
@@ -88,13 +171,14 @@ export default component$(() => {
               alt="map-image"
               onLoad$={upgradeMapImage}
               ref={mapRef}
+              data-map-image="true"
             />
           </div>
 
           <br />
 
           <p>
-            pin count: <span>{pins.length}</span>
+            pin count: <span>{pinStore.pins.length}</span>
           </p>
 
           <p>
