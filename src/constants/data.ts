@@ -2,6 +2,13 @@ export type Item = (typeof items)[number];
 
 export type Region = (typeof regions)[number];
 
+export interface Pin {
+  item: Item | undefined;
+  count?: number;
+  coordinate: { x: number; y: number };
+  mapSize: { width: number; height: number };
+}
+
 export const regions = [
   { id: 1, name: 'Ash Canyon', imageSrc: '/regions/ash-canyon-low.webp' },
   { id: 2, name: 'Blackrock', imageSrc: '/regions/blackrock-low.webp' },
@@ -90,5 +97,3 @@ export const items = [
   { id: 25, name: 'Rabbit_pelt', path: '/items/Rabbit_pelt-low.webp' },
   { id: 25, name: 'Woodwrights_Bow', path: '/items/Woodwrights_Bow-low.webp' },
 ];
-
-export const saveItem = (region: any) => console.log('saving region', region);

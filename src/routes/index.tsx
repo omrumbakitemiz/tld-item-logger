@@ -1,28 +1,46 @@
 import { $, component$, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import type { DocumentHead } from '@builder.io/qwik-city';
-import type { Item, Region } from '~/constants/data';
+import { server$ } from '@builder.io/qwik-city';
+import type { Item, Pin, Region } from '~/constants/data';
 import { items, regions } from '~/constants/data';
+import { selectItems } from '~/utils/db';
 import { debounce } from '~/utils/utils';
 
-interface Pin {
-  item?: Item | null;
-  count?: number;
-  coordinate?: { x: number; y: number };
-  mapSize: { width: number; height: number };
-}
+const ashCanyon = regions[0];
+
+const clearMap = (mapImageElement: HTMLImageElement) => {
+  const childNodes = Array.from(mapImageElement.childNodes) as HTMLElement[];
+  childNodes.forEach((node) => {
+    if (!node.hasAttribute('data-map-image')) {
+      mapImageElement.removeChild(node);
+    }
+  });
+};
+
+const allowDrop = (event: any) => event.preventDefault();
+
+const generateImageElement = (pin: Pin) => {
+  const img = document.createElement('img');
+  img.style.position = 'absolute';
+  img.draggable = false;
+  img.style.top = `${pin.coordinate.y - 10}px`;
+  img.style.left = `${pin.coordinate.x - 10}px`;
+  img.style.width = '20px';
+  img.style.height = '20px';
+  img.src = pin.item?.path || '';
+  img.style.borderRadius = '50%';
+  img.style.zIndex = '1000';
+  return img;
+};
 
 export default component$(() => {
-  const currentDragItem = useSignal<Item | null>(null);
-
-  const ashCanyon = regions[0];
+  const currentDragItem = useSignal<Item | undefined>();
 
   const currentRegion = useSignal<Region | null>(ashCanyon);
 
   const currentQuality = useSignal<'low' | 'high'>('low');
 
   const mapRef = useSignal<HTMLImageElement>();
-
-  const allowDrop = $((event: any) => event.preventDefault());
 
   const pinStore = useStore<{ pins: Pin[] }>({ pins: [] }, { deep: true });
 
@@ -70,7 +88,7 @@ export default component$(() => {
       debounce((entries: any) => {
         for (const entry of entries) {
           const cr = entry.contentRect;
-          const newPins = pinStore.pins.map((pin) => {
+          pinStore.pins = pinStore.pins.map((pin) => {
             if (pin.coordinate) {
               console.log('coordinate', pin.coordinate.x, pin.coordinate.y);
 
@@ -87,10 +105,8 @@ export default component$(() => {
 
             return pin;
           });
-
-          pinStore.pins = newPins;
         }
-      }, 1000),
+      }, 100),
     );
 
     if (mapRef.value) {
@@ -105,32 +121,16 @@ export default component$(() => {
 
     console.log('pinStore.pins', pinStore.pins);
 
-    const mapImageElement = document.getElementById('map-image');
+    const mapImageElement = document.getElementById('map-image') as HTMLImageElement;
 
     if (mapImageElement) {
       // remove all child nodes that don't have the data-map-image attribute
-      const childNodes = Array.from(mapImageElement.childNodes) as HTMLElement[];
-      childNodes.forEach((node) => {
-        if (!node.hasAttribute('data-map-image')) {
-          mapImageElement.removeChild(node);
-        }
-      });
+      clearMap(mapImageElement);
 
       pinStore.pins.forEach((pin) => {
-        if (pin.coordinate && pin.item) {
-          const img = document.createElement('img');
-          img.style.position = 'absolute';
-          img.draggable = false;
-          img.style.top = `${pin.coordinate.y}px`;
-          img.style.left = `${pin.coordinate.x}px`;
-          img.style.width = '20px';
-          img.style.height = '20px';
-          img.src = pin.item.path || '';
-          img.style.borderRadius = '50%';
-          img.style.zIndex = '1000';
+        const img = generateImageElement(pin);
 
-          mapImageElement.appendChild(img);
-        }
+        mapImageElement.appendChild(img);
       });
     }
   });
@@ -175,6 +175,12 @@ export default component$(() => {
               {currentQuality.value}
             </span>
           </p>
+
+          <div>
+            <button class="btn btn-accent" onClick$={server$(async () => await selectItems())}>
+              immino
+            </button>
+          </div>
         </div>
         {/* Item Area */}
         <div class="grid grid-cols-3 gap-4 max-w-[300px] max-h-[650px] overflow-y-scroll overflow-x-hidden pt-11 px-2">
@@ -182,7 +188,7 @@ export default component$(() => {
             <div class="tooltip" data-tip={item.name}>
               <button class="btn">
                 <img
-                  draggable
+                  draggable={true}
                   src={item.path}
                   alt="item-image"
                   width="50px"
