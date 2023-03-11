@@ -24,7 +24,7 @@ export default component$(() => {
 
   const allowDrop = $((event: any) => event.preventDefault());
 
-  const pinStore = useStore<{ pins: Pin[] }>({ pins: [] });
+  const pinStore = useStore<{ pins: Pin[] }>({ pins: [] }, { deep: true });
 
   const drop = $((event: DragEvent) => {
     if (mapRef.value) {
@@ -33,20 +33,17 @@ export default component$(() => {
       const xCoordinate = event.offsetX - 5;
       const yCoordinate = event.offsetY - 5;
 
-      pinStore.pins = [
-        ...pinStore.pins,
-        {
-          item: currentDragItem.value,
-          coordinate: {
-            x: xCoordinate,
-            y: yCoordinate,
-          },
-          mapSize: {
-            width: mapRef.value.clientWidth,
-            height: mapRef.value.clientHeight,
-          },
+      pinStore.pins.push({
+        item: currentDragItem.value,
+        coordinate: {
+          x: xCoordinate,
+          y: yCoordinate,
         },
-      ];
+        mapSize: {
+          width: mapRef.value.clientWidth,
+          height: mapRef.value.clientHeight,
+        },
+      });
     }
   });
 
@@ -104,7 +101,7 @@ export default component$(() => {
   });
 
   useVisibleTask$(({ track }) => {
-    track(() => pinStore.pins);
+    track(() => pinStore.pins.length);
 
     console.log('pinStore.pins', pinStore.pins);
 
