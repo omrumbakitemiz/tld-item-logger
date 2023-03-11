@@ -1,7 +1,8 @@
-import { $, component$, useBrowserVisibleTask$, useSignal, useStore } from '@builder.io/qwik';
+import { $, component$, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import type { DocumentHead } from '@builder.io/qwik-city';
 import type { Item, Region } from '~/constants/data';
 import { items, regions } from '~/constants/data';
+import { debounce } from '~/utils/utils';
 
 interface Pin {
   item?: Item | null;
@@ -10,28 +11,18 @@ interface Pin {
   mapSize: { width: number; height: number };
 }
 
-function debounce(f: any, delay: any) {
-  let timer = 0;
-  return function (...args: any) {
-    clearTimeout(timer);
-    // @ts-ignore
-    timer = setTimeout(() => f.apply(this, args), delay);
-  };
-}
-
 export default component$(() => {
   const currentDragItem = useSignal<Item | null>(null);
 
   const ashCanyon = regions[0];
+
   const currentRegion = useSignal<Region | null>(ashCanyon);
 
   const currentQuality = useSignal<'low' | 'high'>('low');
 
   const mapRef = useSignal<HTMLImageElement>();
 
-  const allowDrop = $((event: any) => {
-    event.preventDefault();
-  });
+  const allowDrop = $((event: any) => event.preventDefault());
 
   const pinStore = useStore<{ pins: Pin[] }>({ pins: [] });
 
@@ -77,7 +68,7 @@ export default component$(() => {
     }, 1000);
   });
 
-  useBrowserVisibleTask$(() => {
+  useVisibleTask$(() => {
     const ro = new ResizeObserver(
       debounce((entries: any) => {
         for (const entry of entries) {
@@ -112,7 +103,7 @@ export default component$(() => {
     return () => ro.disconnect();
   });
 
-  useBrowserVisibleTask$(({ track }) => {
+  useVisibleTask$(({ track }) => {
     track(() => pinStore.pins);
 
     console.log('pinStore.pins', pinStore.pins);
@@ -129,7 +120,7 @@ export default component$(() => {
       });
 
       pinStore.pins.forEach((pin) => {
-        if (pin.coordinate) {
+        if (pin.coordinate && pin.item) {
           const img = document.createElement('img');
           img.style.position = 'absolute';
           img.draggable = false;
@@ -137,7 +128,7 @@ export default component$(() => {
           img.style.left = `${pin.coordinate.x}px`;
           img.style.width = '20px';
           img.style.height = '20px';
-          img.src = currentDragItem.value?.path || '';
+          img.src = pin.item.path || '';
           img.style.borderRadius = '50%';
           img.style.zIndex = '1000';
 
@@ -152,7 +143,7 @@ export default component$(() => {
       <div class="flex justify-between px-6 py-4">
         <div>
           {/* Map Selection */}
-          <select class="select w-full max-w-xs bg-gray-800">
+          <select class="select w-full bg-gray-800">
             <option disabled selected>
               Pick Map
             </option>{' '}
@@ -166,8 +157,8 @@ export default component$(() => {
               onDrop$={(event: any) => drop(event)}
               onDragOver$={(event) => allowDrop(event)}
               src={currentRegion.value?.imageSrc}
-              width="550px"
-              height="640px"
+              width="650px"
+              height="750px"
               alt="map-image"
               onLoad$={upgradeMapImage}
               ref={mapRef}
