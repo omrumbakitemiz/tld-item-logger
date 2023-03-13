@@ -18,13 +18,13 @@ specifiers:
   prettier: 2.8.4
   tailwindcss: ^3.2.7
   typescript: 4.9.5
-  undici: 5.20.0
+  undici: 5.21.0
   vercel: ^28.16.15
   vite: 4.1.4
   vite-tsconfig-paths: 4.0.5
 
 devDependencies:
-  '@builder.io/qwik': 0.21.0_undici@5.20.0
+  '@builder.io/qwik': 0.21.0_undici@5.21.0
   '@builder.io/qwik-city': 0.5.3_@builder.io+qwik@0.21.0
   '@tailwindcss/typography': 0.5.9_tailwindcss@3.2.7
   '@types/eslint': 8.21.1
@@ -41,7 +41,7 @@ devDependencies:
   prettier: 2.8.4
   tailwindcss: 3.2.7_postcss@8.4.21
   typescript: 4.9.5
-  undici: 5.20.0
+  undici: 5.21.0
   vercel: 28.16.15
   vite: 4.1.4_@types+node@18.15.0
   vite-tsconfig-paths: 4.0.5_typescript@4.9.5
@@ -1262,7 +1262,7 @@ packages:
     peerDependencies:
       '@builder.io/qwik': '>=0.20.0'
     dependencies:
-      '@builder.io/qwik': 0.21.0_undici@5.20.0
+      '@builder.io/qwik': 0.21.0_undici@5.21.0
       '@mdx-js/mdx': 2.3.0
       '@types/mdx': 2.0.3
       source-map: 0.7.4
@@ -1272,14 +1272,14 @@ packages:
       - supports-color
     dev: true
 
-  /@builder.io/qwik/0.21.0_undici@5.20.0:
+  /@builder.io/qwik/0.21.0_undici@5.21.0:
     resolution: {integrity: sha512-YDQcCSGPgXLQkY260N4XvYavxPNHewzIzIjqbl9hvnnk7a1s4EkcCrkudbGCl6VkkiQsDKMYPsemy4sFpKlafg==}
     engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
     hasBin: true
     peerDependencies:
       undici: ^5.14.0
     dependencies:
-      undici: 5.20.0
+      undici: 5.21.0
     dev: true
 
   /@cspotcode/source-map-support/0.8.1:
@@ -7027,8 +7027,8 @@ packages:
     resolution: {integrity: sha512-LQc2s/ZDMaCN3QLpa+uzHUOQ7SdV0qgv3VBXOolQGXTaaZpIur6PwUclF5nN2hNkiTRcUugXd1zFOW3FLJ135Q==}
     dev: true
 
-  /undici/5.20.0:
-    resolution: {integrity: sha512-J3j60dYzuo6Eevbawwp1sdg16k5Tf768bxYK4TUJRH7cBM4kFCbf3mOnM/0E3vQYXvpxITbbWmBafaDbxLDz3g==}
+  /undici/5.21.0:
+    resolution: {integrity: sha512-HOjK8l6a57b2ZGXOcUsI5NLfoTrfmbOl90ixJDl0AEFG4wgHNDQxtZy15/ZQp7HhjkpaGlp/eneMgtsu1dIlUA==}
     engines: {node: '>=12.18'}
     dependencies:
       busboy: 1.6.0
