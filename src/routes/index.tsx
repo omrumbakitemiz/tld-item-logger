@@ -1,9 +1,9 @@
 import { $, component$, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import type { DocumentHead } from '@builder.io/qwik-city';
-import { server$ } from '@builder.io/qwik-city';
+import { globalAction$, routeLoader$, zod$ } from '@builder.io/qwik-city';
 import type { Item, Pin, Region } from '~/constants/data';
-import { items, regions } from '~/constants/data';
-import { selectItems } from '~/utils/db';
+import { items, PinSchema, regions } from '~/constants/data';
+import { getAllPins, insertPin } from '~/db';
 import { debounce } from '~/utils/utils';
 
 const ashCanyon = regions[0];
@@ -23,8 +23,10 @@ const generateImageElement = (pin: Pin) => {
   const img = document.createElement('img');
   img.style.position = 'absolute';
   img.draggable = false;
-  img.style.top = `${pin.coordinate.y - 10}px`;
-  img.style.left = `${pin.coordinate.x - 10}px`;
+  if (pin.coordinate) {
+    img.style.top = `${pin.coordinate.y - 10}px`;
+    img.style.left = `${pin.coordinate.x - 10}px`;
+  }
   img.style.width = '20px';
   img.style.height = '20px';
   img.src = pin.item?.path || '';
@@ -34,6 +36,12 @@ const generateImageElement = (pin: Pin) => {
 };
 
 export default component$(() => {
+  const inserPinAction = useInsertPin();
+
+  const allPins = useGetAllPins();
+
+  const pinStore = useStore<{ pins: Pin[] }>({ pins: allPins.value });
+
   const currentDragItem = useSignal<Item | undefined>();
 
   const currentRegion = useSignal<Region | null>(ashCanyon);
@@ -42,26 +50,28 @@ export default component$(() => {
 
   const mapRef = useSignal<HTMLImageElement>();
 
-  const pinStore = useStore<{ pins: Pin[] }>({ pins: [] }, { deep: true });
-
   const drop = $((event: DragEvent) => {
-    if (mapRef.value) {
+    if (mapRef.value && currentDragItem.value) {
       event.preventDefault();
 
       const xCoordinate = event.offsetX - 5;
       const yCoordinate = event.offsetY - 5;
 
-      pinStore.pins.push({
-        item: currentDragItem.value,
-        coordinate: {
-          x: xCoordinate,
-          y: yCoordinate,
+      pinStore.pins = [
+        ...pinStore.pins,
+        {
+          count: 1,
+          item: currentDragItem.value,
+          coordinate: {
+            x: xCoordinate,
+            y: yCoordinate,
+          },
+          mapSize: {
+            width: mapRef.value.clientWidth,
+            height: mapRef.value.clientHeight,
+          },
         },
-        mapSize: {
-          width: mapRef.value.clientWidth,
-          height: mapRef.value.clientHeight,
-        },
-      });
+      ];
     }
   });
 
@@ -88,8 +98,8 @@ export default component$(() => {
       debounce((entries: any) => {
         for (const entry of entries) {
           const cr = entry.contentRect;
-          pinStore.pins = pinStore.pins.map((pin) => {
-            if (pin.coordinate) {
+          pinStore.pins = pinStore.pins?.map((pin) => {
+            if (pin.coordinate && pin.mapSize) {
               console.log('coordinate', pin.coordinate.x, pin.coordinate.y);
 
               const newXCoordinate = (cr.width / pin.mapSize.width) * pin.coordinate.x;
@@ -128,10 +138,13 @@ export default component$(() => {
       clearMap(mapImageElement);
 
       pinStore.pins.forEach((pin) => {
-        const img = generateImageElement(pin);
-
-        mapImageElement.appendChild(img);
+        mapImageElement.appendChild(generateImageElement(pin));
       });
+
+      const latestPin = pinStore.pins[pinStore.pins.length - 1];
+      if (latestPin) {
+        inserPinAction.run(latestPin);
+      }
     }
   });
 
@@ -166,7 +179,7 @@ export default component$(() => {
           <br />
 
           <p>
-            pin count: <span>{pinStore.pins.length}</span>
+            pin count: <span>{pinStore.pins?.length}</span>
           </p>
 
           <p>
@@ -175,12 +188,6 @@ export default component$(() => {
               {currentQuality.value}
             </span>
           </p>
-
-          <div>
-            <button class="btn btn-accent" onClick$={server$(async () => await selectItems())}>
-              immino
-            </button>
-          </div>
         </div>
         {/* Item Area */}
         <div class="grid grid-cols-3 gap-4 max-w-[300px] max-h-[650px] overflow-y-scroll overflow-x-hidden pt-11 px-2">
@@ -213,3 +220,29 @@ export const head: DocumentHead = {
     },
   ],
 };
+
+export const useInsertPin = globalAction$(async (pin) => await insertPin(pin), zod$(PinSchema));
+
+export const useGetAllPins = routeLoader$(async () => {
+  const pins = await getAllPins();
+
+  return pins.map((pin) => {
+    return {
+      id: pin.id,
+      count: pin.count,
+      item: {
+        id: pin.item!.id,
+        name: pin.item!.name,
+        path: pin.item!.path,
+      },
+      coordinate: {
+        x: pin.coordinate!.x,
+        y: pin.coordinate!.y,
+      },
+      mapSize: {
+        width: pin.mapSize!.width,
+        height: pin.mapSize!.height,
+      },
+    };
+  });
+});
