@@ -21,7 +21,7 @@ specifiers:
   undici: 5.20.0
   vercel: ^28.16.15
   vite: 4.1.4
-  vite-tsconfig-paths: 4.0.5
+  vite-tsconfig-paths: 4.0.7
 
 devDependencies:
   '@builder.io/qwik': 0.21.0_undici@5.20.0
@@ -44,7 +44,7 @@ devDependencies:
   undici: 5.20.0
   vercel: 28.16.15
   vite: 4.1.4_@types+node@18.15.0
-  vite-tsconfig-paths: 4.0.5_typescript@4.9.5
+  vite-tsconfig-paths: 4.0.7_vwvfc4ezh6jlf6pa67auy3eulu
 
 packages:
 
@@ -7247,12 +7247,18 @@ packages:
       vfile-message: 3.1.4
     dev: true
 
-  /vite-tsconfig-paths/4.0.5_typescript@4.9.5:
-    resolution: {integrity: sha512-/L/eHwySFYjwxoYt1WRJniuK/jPv+WGwgRGBYx3leciR5wBeqntQpUE6Js6+TJemChc+ter7fDBKieyEWDx4yQ==}
+  /vite-tsconfig-paths/4.0.7_vwvfc4ezh6jlf6pa67auy3eulu:
+    resolution: {integrity: sha512-MwIYaby6kcbQGZqMH+gAK6h0UYQGOkjsuAgw4q6bP/5vWkn8VKvnmLuCQHA2+IzHAJHnE8OFTO4lnJLFMf9+7Q==}
+    peerDependencies:
+      vite: '*'
+    peerDependenciesMeta:
+      vite:
+        optional: true
     dependencies:
       debug: 4.3.4
       globrex: 0.1.2
       tsconfck: 2.0.3_typescript@4.9.5
+      vite: 4.1.4_@types+node@18.15.0
     transitivePeerDependencies:
       - supports-color
       - typescript
