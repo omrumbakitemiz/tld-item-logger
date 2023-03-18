@@ -1,26 +1,27 @@
-import { PrismaClient } from '@prisma/client';
-import type { Pin } from '~/constants/data';
+import { server$ } from '@builder.io/qwik-city';
+import { type Prisma } from '@prisma/client';
+import { prisma } from '~/root';
 
-const db = new PrismaClient();
-console.log('prisma client created');
+export const insertPin = server$(async (pins: Prisma.PinCreateInput[]) => {
+  console.log('inserting pin', pins);
 
-export const insertPin = async (pin: Pin) => {
-  if (pin.coordinate && pin.mapSize) {
-    db.pin.create({
-      data: {
-        id: pin.id,
-        count: pin.count,
-        item: {
-          create: {
-            name: pin.item.name,
-            path: pin.item.path,
-          },
-        },
-      },
-    });
-  }
-};
+  const deleteResult = await prisma.pin.deleteMany();
 
-export const getAllPins = async () => {
-  return await db.pin.findMany({ include: { item: true, mapSize: true, coordinate: true } });
-};
+  console.log(`deleteResult: ${deleteResult.count} pins deleted`);
+
+  const newPin = await prisma.pin.createMany({
+    data: pins,
+  });
+
+  return newPin;
+});
+
+export const getAllPins = server$(async () => {
+  console.log('getting all pins');
+
+  const pins = await prisma.pin.findMany();
+
+  console.log('pins', pins);
+
+  return pins;
+});

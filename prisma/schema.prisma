@@ -1,47 +1,31 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator zod {
+  provider = "zod-prisma-types"
+}
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Pin {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  count Int
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  item       Item?
-  coordinate Coordinate?
-  mapSize    MapSize?
-}
+  regionId        Int
+  regionName      String
+  regionMapWidth  Int
+  regionMapHeight Int
 
-model Item {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  path String
-
-  pin   Pin    @relation(fields: [pinId], references: [id])
-  pinId String @unique @db.ObjectId
-}
-
-model Coordinate {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  x  Int
-  y  Int
-
-  pin   Pin    @relation(fields: [pinId], references: [id])
-  pinId String @unique @db.ObjectId
-}
-
-model MapSize {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  width  Int
-  height Int
-
-  pin   Pin    @relation(fields: [pinId], references: [id])
-  pinId String @unique @db.ObjectId
+  itemId          Int
+  itemCount       Int
+  itemName        String
+  itemImagePath   String
+  itemXCoordinate Int
+  itemYCoordinate Int
 }
