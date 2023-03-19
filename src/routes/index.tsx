@@ -87,7 +87,7 @@ export default component$(() => {
     }, 1000);
   });
 
-  const savePins = $(async () => await insertPin(pinStore.pins));
+  const savePins = $(async () => await insertPin(pinStore.pins, currentRegion.value.id));
 
   useVisibleTask$(() => {
     console.log('useVisibleTask$ resize observer');
