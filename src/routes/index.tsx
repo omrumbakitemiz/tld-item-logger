@@ -1,10 +1,10 @@
 import { $, component$, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import type { DocumentHead } from '@builder.io/qwik-city';
 import { routeLoader$ } from '@builder.io/qwik-city';
-import type { Item, Pin, Region } from '~/constants/data';
+import type { Item, NewPin, Region } from '~/constants/data';
 import { items, regions } from '~/constants/data';
 import { getAllPins, insertPin } from '~/db';
-import { debounce } from '~/utils/utils';
+import { debounce } from '~/utils';
 
 const ashCanyon = regions[0];
 
@@ -19,7 +19,7 @@ const clearMap = (mapImageElement: HTMLImageElement) => {
 
 const allowDrop = (event: any) => event.preventDefault();
 
-const generateImageElement = (pin: Pin) => {
+const generateImageElement = (pin: NewPin) => {
   const img = document.createElement('img');
   img.style.position = 'absolute';
   img.draggable = true;
@@ -38,7 +38,7 @@ const generateImageElement = (pin: Pin) => {
 export default component$(() => {
   const allPins = useGetAllPins();
 
-  const pinStore = useStore<{ pins: Pin[] }>({ pins: allPins.value });
+  const pinStore = useStore<{ pins: NewPin[] }>({ pins: allPins.value || [] });
 
   const currentDragItem = useSignal<Item>();
   const currentRegion = useSignal<Region>(ashCanyon);
@@ -46,6 +46,7 @@ export default component$(() => {
   const regionMapRef = useSignal<HTMLImageElement>();
 
   const drop = $((event: DragEvent) => {
+    console.log('drop called');
     if (regionMapRef.value && currentDragItem.value) {
       event.preventDefault();
 
@@ -89,10 +90,13 @@ export default component$(() => {
   const savePins = $(async () => await insertPin(pinStore.pins));
 
   useVisibleTask$(() => {
+    console.log('useVisibleTask$ resize observer');
     const ro = new ResizeObserver(
       debounce((entries: any) => {
         for (const entry of entries) {
           const cr = entry.contentRect;
+          console.log('pinStore.pins assigning...');
+          // refactor this re-assignment logic to be more efficient and cause less re-renders
           pinStore.pins = pinStore.pins.map((pin) => {
             console.log('coordinate', pin.itemXCoordinate, pin.itemYCoordinate);
 
@@ -120,6 +124,7 @@ export default component$(() => {
   });
 
   useVisibleTask$(({ track }) => {
+    console.log('useVisibleTask$ pinStore.pins.length');
     track(() => pinStore.pins.length);
 
     console.log('pinStore.pins', pinStore.pins);
@@ -128,6 +133,7 @@ export default component$(() => {
 
     if (mapImageElement) {
       // remove all child nodes that don't have the data-map-image attribute
+      // todo: refactor this to be more efficient, maybe only add new pins instead of clearing the map and re-adding all pins
       clearMap(mapImageElement);
 
       pinStore.pins.forEach((pin) => {

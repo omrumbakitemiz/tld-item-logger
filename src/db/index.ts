@@ -1,30 +1,40 @@
 import { server$ } from '@builder.io/qwik-city';
-import { PrismaClient, type Prisma } from '@prisma/client';
+import { connect } from '@planetscale/database';
+import { drizzle } from 'drizzle-orm/planetscale-serverless';
+// import { migrate } from 'drizzle-orm/planetscale-serverless/migrator';
+import type { NewPin } from '~/constants/data';
+import { pins } from './schema';
 
-export const insertPin = server$(async (pins: Prisma.PinCreateInput[]) => {
-  const prisma = new PrismaClient();
+const connection = connect({
+  host: import.meta.env['VITE_DATABASE_HOST'],
+  username: import.meta.env['VITE_DATABASE_USERNAME'],
+  password: import.meta.env['VITE_DATABASE_PASSWORD'],
+});
 
-  console.log('inserting pin', pins);
+const db = drizzle(connection, { logger: true });
 
-  const deleteResult = await prisma.pin.deleteMany();
+// this will automatically run needed migrations on the database
+// await migrate(db, { migrationsFolder: './drizzle' });
 
-  console.log(`deleteResult: ${deleteResult.count} pins deleted`);
+export const insertPin = server$(async (newPins: NewPin[]) => {
+  console.log('inserting pins', newPins);
 
-  const newPin = await prisma.pin.createMany({
-    data: pins,
-  });
+  try {
+    const result = await db.insert(pins).values(...newPins);
 
-  return newPin;
+    console.log('insert result: ', result);
+  } catch (error) {
+    console.error('Error inserting pins: ' + error);
+  }
 });
 
 export const getAllPins = server$(async () => {
-  const prisma = new PrismaClient();
-
   console.log('getting all pins');
 
-  const pins = await prisma.pin.findMany();
-
-  console.log('pins', pins);
-
-  return pins;
+  try {
+    const allPins = await db.select().from(pins);
+    return allPins;
+  } catch (error) {
+    console.log('Error getting all pins: ' + error);
+  }
 });
