@@ -2,19 +2,19 @@ import { component$ } from '@builder.io/qwik';
 import { QwikCityProvider, RouterOutlet, ServiceWorkerRegister } from '@builder.io/qwik-city';
 import { RouterHead } from './components/router-head/router-head';
 
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 
-interface PrismaNodeJsGlobal extends Global {
-  prisma: PrismaClient | null;
-}
+// interface PrismaNodeJsGlobal extends Global {
+//   prisma: PrismaClient | null;
+// }
 
-declare const global: PrismaNodeJsGlobal;
+// declare const global: PrismaNodeJsGlobal;
 
-export const prisma = global.prisma || new PrismaClient();
+// export const prisma = global.prisma || new PrismaClient();
 
-if (process.env.NODE_ENV === 'development') global.prisma = prisma;
+// if (process.env.NODE_ENV === 'development') global.prisma = prisma;
 
-console.log('prisma created');
+// console.log('prisma created');
 
 import './global.css';
 

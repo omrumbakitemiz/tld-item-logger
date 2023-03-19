@@ -1,8 +1,9 @@
 import { server$ } from '@builder.io/qwik-city';
-import { type Prisma } from '@prisma/client';
-import { prisma } from '~/root';
+import { PrismaClient, type Prisma } from '@prisma/client';
 
 export const insertPin = server$(async (pins: Prisma.PinCreateInput[]) => {
+  const prisma = new PrismaClient();
+
   console.log('inserting pin', pins);
 
   const deleteResult = await prisma.pin.deleteMany();
@@ -17,6 +18,8 @@ export const insertPin = server$(async (pins: Prisma.PinCreateInput[]) => {
 });
 
 export const getAllPins = server$(async () => {
+  const prisma = new PrismaClient();
+
   console.log('getting all pins');
 
   const pins = await prisma.pin.findMany();

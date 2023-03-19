@@ -23,8 +23,8 @@
     "qwik": "qwik"
   },
   "devDependencies": {
-    "@builder.io/qwik": "^0.22.1",
-    "@builder.io/qwik-city": "^0.6.3",
+    "@builder.io/qwik": "^0.23.0",
+    "@builder.io/qwik-city": "^0.6.5",
     "@tailwindcss/typography": "^0.5.9",
     "@types/eslint": "^8.21.2",
     "@types/node": "^18.15.3",
@@ -35,7 +35,7 @@
     "autoprefixer": "^10.4.14",
     "daisyui": "^2.51.4",
     "eslint": "^8.36.0",
-    "eslint-plugin-qwik": "^0.22.1",
+    "eslint-plugin-qwik": "^0.23.0",
     "mongoose": "^7.0.2",
     "node-fetch": "^3.3.1",
     "postcss": "^8.4.21",
