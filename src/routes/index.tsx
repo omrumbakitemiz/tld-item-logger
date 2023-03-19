@@ -1,49 +1,72 @@
 import { $, component$, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import type { DocumentHead } from '@builder.io/qwik-city';
-import type { Item, Region } from '~/constants/data';
+import { routeLoader$ } from '@builder.io/qwik-city';
+import type { Item, NewPin, Region } from '~/constants/data';
 import { items, regions } from '~/constants/data';
-import { debounce } from '~/utils/utils';
+import { getAllPins, insertPin } from '~/db';
+import { debounce } from '~/utils';
 
-interface Pin {
-  item?: Item | null;
-  count?: number;
-  coordinate?: { x: number; y: number };
-  mapSize: { width: number; height: number };
-}
+const ashCanyon = regions[0];
+
+const clearMap = (mapImageElement: HTMLImageElement) => {
+  const childNodes = Array.from(mapImageElement.childNodes) as HTMLElement[];
+  childNodes.forEach((node) => {
+    if (!node.hasAttribute('data-map-image')) {
+      mapImageElement.removeChild(node);
+    }
+  });
+};
+
+const allowDrop = (event: any) => event.preventDefault();
+
+const generateImageElement = (pin: NewPin) => {
+  const img = document.createElement('img');
+  img.style.position = 'absolute';
+  img.draggable = true;
+  if (pin.itemXCoordinate && pin.itemYCoordinate) {
+    img.style.top = `${pin.itemYCoordinate - 10}px`;
+    img.style.left = `${pin.itemXCoordinate - 10}px`;
+  }
+  img.style.width = '20px';
+  img.style.height = '20px';
+  img.src = pin.itemImagePath;
+  img.style.borderRadius = '50%';
+  img.style.zIndex = '1000';
+  return img;
+};
 
 export default component$(() => {
-  const currentDragItem = useSignal<Item | null>(null);
+  const allPins = useGetAllPins();
 
-  const ashCanyon = regions[0];
+  const pinStore = useStore<{ pins: NewPin[] }>({ pins: allPins.value || [] });
 
-  const currentRegion = useSignal<Region | null>(ashCanyon);
-
-  const currentQuality = useSignal<'low' | 'high'>('low');
-
-  const mapRef = useSignal<HTMLImageElement>();
-
-  const allowDrop = $((event: any) => event.preventDefault());
-
-  const pinStore = useStore<{ pins: Pin[] }>({ pins: [] }, { deep: true });
+  const currentDragItem = useSignal<Item>();
+  const currentRegion = useSignal<Region>(ashCanyon);
+  const currentRegionMapQuality = useSignal<'low' | 'high'>('low');
+  const regionMapRef = useSignal<HTMLImageElement>();
 
   const drop = $((event: DragEvent) => {
-    if (mapRef.value) {
+    console.log('drop called');
+    if (regionMapRef.value && currentDragItem.value) {
       event.preventDefault();
 
-      const xCoordinate = event.offsetX - 5;
-      const yCoordinate = event.offsetY - 5;
+      pinStore.pins = [
+        ...pinStore.pins,
+        {
+          itemId: currentDragItem.value.id,
+          itemCount: currentDragItem.value.count,
+          itemName: currentDragItem.value.name,
+          itemImagePath: currentDragItem.value.imagePath,
 
-      pinStore.pins.push({
-        item: currentDragItem.value,
-        coordinate: {
-          x: xCoordinate,
-          y: yCoordinate,
+          itemXCoordinate: event.offsetX - 5,
+          itemYCoordinate: event.offsetY - 5,
+
+          regionId: currentRegion.value.id,
+          regionName: currentRegion.value.name,
+          regionMapWidth: regionMapRef.value.clientWidth,
+          regionMapHeight: regionMapRef.value.clientHeight,
         },
-        mapSize: {
-          width: mapRef.value.clientWidth,
-          height: mapRef.value.clientHeight,
-        },
-      });
+      ];
     }
   });
 
@@ -52,85 +75,69 @@ export default component$(() => {
   });
 
   const upgradeMapImage = $(() => {
-    console.log('upgradeMapImage');
     setTimeout(() => {
-      if (currentQuality.value === 'low') {
-        currentQuality.value = 'high';
+      if (currentRegionMapQuality.value === 'low') {
+        currentRegionMapQuality.value = 'high';
 
-        const newImageSrc = `${currentRegion.value?.imageSrc.replace('low', 'high')}`;
-        if (mapRef.value) {
-          mapRef.value.src = newImageSrc;
+        const newImageSrc = `${currentRegion.value?.imagePath.replace('low', 'high')}`;
+        if (regionMapRef.value) {
+          regionMapRef.value.src = newImageSrc;
         }
       }
     }, 1000);
   });
 
+  const savePins = $(async () => await insertPin(pinStore.pins));
+
   useVisibleTask$(() => {
+    console.log('useVisibleTask$ resize observer');
     const ro = new ResizeObserver(
       debounce((entries: any) => {
         for (const entry of entries) {
           const cr = entry.contentRect;
-          const newPins = pinStore.pins.map((pin) => {
-            if (pin.coordinate) {
-              console.log('coordinate', pin.coordinate.x, pin.coordinate.y);
+          console.log('pinStore.pins assigning...');
+          // refactor this re-assignment logic to be more efficient and cause less re-renders
+          pinStore.pins = pinStore.pins.map((pin) => {
+            console.log('coordinate', pin.itemXCoordinate, pin.itemYCoordinate);
 
-              const newXCoordinate = (cr.width / pin.mapSize.width) * pin.coordinate.x;
-              const newYCoordinate = (cr.height / pin.mapSize.height) * pin.coordinate.y;
+            const newXCoordinate = (cr.width / pin.regionMapWidth) * pin.itemXCoordinate;
+            const newYCoordinate = (cr.height / pin.regionMapHeight) * pin.itemYCoordinate;
 
-              console.log('new coordinate', newXCoordinate, newYCoordinate);
+            console.log('new coordinate', newXCoordinate, newYCoordinate);
 
-              pin.coordinate.x = newXCoordinate;
-              pin.coordinate.y = newYCoordinate;
-              pin.mapSize.width = cr.width;
-              pin.mapSize.height = cr.height;
-            }
+            pin.itemXCoordinate = newXCoordinate;
+            pin.itemYCoordinate = newYCoordinate;
+            pin.regionMapWidth = cr.width;
+            pin.regionMapHeight = cr.height;
 
             return pin;
           });
-
-          pinStore.pins = newPins;
         }
-      }, 1000),
+      }, 100),
     );
 
-    if (mapRef.value) {
-      ro.observe(mapRef.value);
+    if (regionMapRef.value) {
+      ro.observe(regionMapRef.value);
     }
 
     return () => ro.disconnect();
   });
 
   useVisibleTask$(({ track }) => {
+    console.log('useVisibleTask$ pinStore.pins.length');
     track(() => pinStore.pins.length);
 
     console.log('pinStore.pins', pinStore.pins);
 
-    const mapImageElement = document.getElementById('map-image');
+    const mapImageElement = document.getElementById('map-image') as HTMLImageElement;
 
     if (mapImageElement) {
       // remove all child nodes that don't have the data-map-image attribute
-      const childNodes = Array.from(mapImageElement.childNodes) as HTMLElement[];
-      childNodes.forEach((node) => {
-        if (!node.hasAttribute('data-map-image')) {
-          mapImageElement.removeChild(node);
-        }
-      });
+      // todo: refactor this to be more efficient, maybe only add new pins instead of clearing the map and re-adding all pins
+      clearMap(mapImageElement);
 
       pinStore.pins.forEach((pin) => {
-        if (pin.coordinate && pin.item) {
-          const img = document.createElement('img');
-          img.style.position = 'absolute';
-          img.draggable = false;
-          img.style.top = `${pin.coordinate.y}px`;
-          img.style.left = `${pin.coordinate.x}px`;
-          img.style.width = '20px';
-          img.style.height = '20px';
-          img.src = pin.item.path || '';
-          img.style.borderRadius = '50%';
-          img.style.zIndex = '1000';
-
-          mapImageElement.appendChild(img);
-        }
+        mapImageElement.appendChild(generateImageElement(pin));
       });
     }
   });
@@ -145,7 +152,9 @@ export default component$(() => {
               Pick Map
             </option>{' '}
             {regions.map((region) => (
-              <option onClick$={() => (currentRegion.value = region)}>{region.name}</option>
+              <option key={region.id} onClick$={() => (currentRegion.value = region)}>
+                {region.name}
+              </option>
             ))}
           </select>
           {/* Map Area */}
@@ -153,12 +162,12 @@ export default component$(() => {
             <img
               onDrop$={(event: any) => drop(event)}
               onDragOver$={(event) => allowDrop(event)}
-              src={currentRegion.value?.imageSrc}
+              src={currentRegion.value?.imagePath}
               width="650px"
               height="750px"
               alt="map-image"
               onLoad$={upgradeMapImage}
-              ref={mapRef}
+              ref={regionMapRef}
               data-map-image="true"
             />
           </div>
@@ -166,32 +175,38 @@ export default component$(() => {
           <br />
 
           <p>
-            pin count: <span>{pinStore.pins.length}</span>
+            pin count: <span>{pinStore.pins?.length}</span>
           </p>
 
           <p>
             currentMapImage quality:{' '}
-            <span class={currentQuality.value === 'high' ? 'text-green-500' : 'text-red-500'}>
-              {currentQuality.value}
+            <span class={currentRegionMapQuality.value === 'high' ? 'text-green-500' : 'text-red-500'}>
+              {currentRegionMapQuality.value}
             </span>
           </p>
         </div>
         {/* Item Area */}
-        <div class="grid grid-cols-3 gap-4 max-w-[300px] max-h-[650px] overflow-y-scroll overflow-x-hidden pt-11 px-2">
-          {items.map((item) => (
-            <div class="tooltip" data-tip={item.name}>
-              <button class="btn">
-                <img
-                  draggable
-                  src={item.path}
-                  alt="item-image"
-                  width="50px"
-                  height="50px"
-                  onDragStart$={(event: any) => onDragStart(event, item)}
-                />
-              </button>
-            </div>
-          ))}
+
+        <div class="flex flex-col mt-1">
+          <button class="btn btn-primary" type="button" onClick$={() => savePins()}>
+            Save Pins
+          </button>
+          <div class="grid grid-cols-3 gap-4 max-w-[300px] max-h-[650px] overflow-y-scroll overflow-x-hidden px-2 mt-8">
+            {items.map((item) => (
+              <div class="tooltip" data-tip={item.name} key={item.id}>
+                <button class="btn">
+                  <img
+                    draggable={true}
+                    src={item.imagePath}
+                    alt="item-image"
+                    width="50px"
+                    height="50px"
+                    onDragStart$={(event: any) => onDragStart(event, item)}
+                  />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>
@@ -207,3 +222,9 @@ export const head: DocumentHead = {
     },
   ],
 };
+
+export const useGetAllPins = routeLoader$(async () => {
+  console.log('useGetAllPins running');
+  const result = await getAllPins();
+  return result;
+});
