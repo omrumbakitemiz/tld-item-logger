@@ -45,28 +45,31 @@ export default component$(() => {
   const currentRegionMapQuality = useSignal<'low' | 'high'>('low');
   const regionMapRef = useSignal<HTMLImageElement>();
 
-  const drop = $((event: DragEvent) => {
+  const drop = $(async (event: DragEvent) => {
     console.log('drop called');
     if (regionMapRef.value && currentDragItem.value) {
       event.preventDefault();
 
-      pinStore.pins = [
-        ...pinStore.pins,
-        {
-          itemId: currentDragItem.value.id,
-          itemCount: currentDragItem.value.count,
-          itemName: currentDragItem.value.name,
-          itemImagePath: currentDragItem.value.imagePath,
+      const newPin = {
+        itemId: currentDragItem.value.id,
+        itemCount: currentDragItem.value.count,
+        itemName: currentDragItem.value.name,
+        itemImagePath: currentDragItem.value.imagePath,
 
-          itemXCoordinate: event.offsetX - 5,
-          itemYCoordinate: event.offsetY - 5,
+        itemXCoordinate: event.offsetX - 5,
+        itemYCoordinate: event.offsetY - 5,
 
-          regionId: currentRegion.value.id,
-          regionName: currentRegion.value.name,
-          regionMapWidth: regionMapRef.value.clientWidth,
-          regionMapHeight: regionMapRef.value.clientHeight,
-        },
-      ];
+        regionId: currentRegion.value.id,
+        regionName: currentRegion.value.name,
+        regionMapWidth: regionMapRef.value.clientWidth,
+        regionMapHeight: regionMapRef.value.clientHeight,
+      };
+
+      const result = await insertPin(newPin);
+
+      if (result?.rowsAffected) {
+        pinStore.pins = [...pinStore.pins, newPin];
+      }
     }
   });
 
@@ -87,8 +90,6 @@ export default component$(() => {
     }, 1000);
   });
 
-  const savePins = $(async () => await insertPin(pinStore.pins));
-
   useVisibleTask$(() => {
     console.log('useVisibleTask$ resize observer');
     const ro = new ResizeObserver(
@@ -99,27 +100,21 @@ export default component$(() => {
           // refactor this re-assignment logic to be more efficient and cause less re-renders
           pinStore.pins = pinStore.pins.map((pin) => {
             console.log('coordinate', pin.itemXCoordinate, pin.itemYCoordinate);
-
             const newXCoordinate = (cr.width / pin.regionMapWidth) * pin.itemXCoordinate;
             const newYCoordinate = (cr.height / pin.regionMapHeight) * pin.itemYCoordinate;
-
             console.log('new coordinate', newXCoordinate, newYCoordinate);
-
             pin.itemXCoordinate = newXCoordinate;
             pin.itemYCoordinate = newYCoordinate;
             pin.regionMapWidth = cr.width;
             pin.regionMapHeight = cr.height;
-
             return pin;
           });
         }
       }, 100),
     );
-
     if (regionMapRef.value) {
       ro.observe(regionMapRef.value);
     }
-
     return () => ro.disconnect();
   });
 
@@ -188,9 +183,6 @@ export default component$(() => {
         {/* Item Area */}
 
         <div class="flex flex-col mt-1">
-          <button class="btn btn-primary" type="button" onClick$={() => savePins()}>
-            Save Pins
-          </button>
           <div class="grid grid-cols-3 gap-4 max-w-[300px] max-h-[650px] overflow-y-scroll overflow-x-hidden px-2 mt-8">
             {items.map((item) => (
               <div class="tooltip" data-tip={item.name} key={item.id}>

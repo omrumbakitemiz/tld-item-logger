@@ -1,6 +1,5 @@
 import { server$ } from '@builder.io/qwik-city';
 import { connect } from '@planetscale/database';
-import { eq } from 'drizzle-orm/expressions';
 import { drizzle } from 'drizzle-orm/planetscale-serverless';
 // import { migrate } from 'drizzle-orm/planetscale-serverless/migrator';
 import type { NewPin } from '~/constants/data';
@@ -17,17 +16,15 @@ const db = drizzle(connection, { logger: true });
 // this will automatically run needed migrations on the database
 // await migrate(db, { migrationsFolder: './drizzle' });
 
-export const insertPin = server$(async (newPins: NewPin[]) => {
-  console.log('inserting pins', newPins);
+export const insertPin = server$(async (newPin: NewPin) => {
+  console.log('inserting pin', newPin);
 
   try {
-    // for now we are deleting all pins and re-inserting them
-    // regionId is same for all pins in the array, so we can just use the first one
-    await db.delete(pins).where(eq(pins.regionId, newPins[0].regionId));
-
-    const result = await db.insert(pins).values(...newPins);
+    const result = await db.insert(pins).values(newPin);
 
     console.log('insert result: ', result);
+
+    return result;
   } catch (error) {
     console.error('Error inserting pins: ' + error);
   }
