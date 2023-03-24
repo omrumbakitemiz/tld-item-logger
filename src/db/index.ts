@@ -1,7 +1,6 @@
 import { server$ } from '@builder.io/qwik-city';
 import { connect } from '@planetscale/database';
 import { drizzle } from 'drizzle-orm/planetscale-serverless';
-// import { migrate } from 'drizzle-orm/planetscale-serverless/migrator';
 import type { NewPin } from '~/constants/data';
 import { pins } from './schema';
 
@@ -12,9 +11,6 @@ const connection = connect({
 });
 
 const db = drizzle(connection, { logger: true });
-
-// this will automatically run needed migrations on the database
-// await migrate(db, { migrationsFolder: './drizzle' });
 
 export const insertPin = server$(async (newPin: NewPin) => {
   console.log('inserting pin', newPin);

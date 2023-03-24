@@ -1,0 +1,4 @@
+{
+  "schema": "./src/db/schema.ts",
+  "connectionString": "mysql://root@127.0.0.1:3306/tld-item-logger?ssl={\"rejectUnauthorized\":true}"
+}
