@@ -4,7 +4,7 @@
   "engines": {
     "node": ">=15.0.0"
   },
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "build": "qwik build",
@@ -29,7 +29,7 @@
     "@planetscale/database": "^1.6.0",
     "@tailwindcss/typography": "^0.5.9",
     "@types/eslint": "^8.21.3",
-    "@types/node": "^18.15.9",
+    "@types/node": "^18.15.10",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
     "autoprefixer": "^10.4.14",
