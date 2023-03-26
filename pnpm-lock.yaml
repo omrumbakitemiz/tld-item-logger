@@ -12,7 +12,7 @@ specifiers:
   autoprefixer: ^10.4.14
   daisyui: ^2.51.5
   drizzle-kit: 0.17.0-0cf3fe9
-  drizzle-orm: 0.22.0-88c1ad3
+  drizzle-orm: 0.23.1
   eslint: ^8.36.0
   eslint-plugin-qwik: ^0.24.0
   postcss: ^8.4.21
@@ -36,7 +36,7 @@ devDependencies:
   autoprefixer: 10.4.14_postcss@8.4.21
   daisyui: 2.51.5_j7yt3jd32cwenjqavrrga47yr4
   drizzle-kit: 0.17.0-0cf3fe9
-  drizzle-orm: 0.22.0-88c1ad3_yjazpptyy5hkedviejakk766iq
+  drizzle-orm: 0.23.1_yjazpptyy5hkedviejakk766iq
   eslint: 8.36.0
   eslint-plugin-qwik: 0.24.0_eslint@8.36.0
   postcss: 8.4.21
@@ -3700,25 +3700,25 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm/0.22.0-88c1ad3_yjazpptyy5hkedviejakk766iq:
-    resolution: {integrity: sha512-sq5hrDk+17sku+8yQjZVDn9jGzf7WkwU0AtQJOhUSSFyff7hAl8MmML5OlSQq/VCDl2by0+EPkDkdSyHfeADTw==}
+  /drizzle-orm/0.23.1_yjazpptyy5hkedviejakk766iq:
+    resolution: {integrity: sha512-ceRajGOw8mHsqjGwlfFCIVjFOrtmifyuIyWPndQnTTXPDNoX8hbxMZz5nEevko8B9C5Agr8G1vfTubnW3jqhtA==}
     peerDependencies:
-      '@aws-sdk/client-rds-data': '>=3 <4'
+      '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
-      '@neondatabase/serverless': '>=0.1 <0.2'
-      '@planetscale/database': '>=1 <2'
+      '@neondatabase/serverless': '>=0.1'
+      '@planetscale/database': '>=1'
       '@types/better-sqlite3': '*'
       '@types/pg': '*'
       '@types/sql.js': '*'
-      better-sqlite3: '>=7 <9'
+      better-sqlite3: '>=7'
       bun-types: '*'
       knex: '*'
       kysely: '*'
-      mysql2: '>=2 <3'
-      pg: '>=8 <9'
-      postgres: '>=3 <4'
-      sql.js: '>=1 <2'
-      sqlite3: '>=5 <6'
+      mysql2: '>=2'
+      pg: '>=8'
+      postgres: '>=3'
+      sql.js: '>=1'
+      sqlite3: '>=5'
     peerDependenciesMeta:
       '@aws-sdk/client-rds-data':
         optional: true

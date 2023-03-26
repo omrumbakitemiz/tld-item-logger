@@ -1,4 +1,4 @@
-import type { InferModel } from 'drizzle-orm/mysql-core/table';
+import type { InferModel } from 'drizzle-orm/table';
 import type { pins } from '~/db/schema';
 
 export type Pin = InferModel<typeof pins>; // return type when queried

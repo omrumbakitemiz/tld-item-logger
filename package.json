@@ -35,7 +35,7 @@
     "autoprefixer": "^10.4.14",
     "daisyui": "^2.51.5",
     "drizzle-kit": "0.17.0-0cf3fe9",
-    "drizzle-orm": "0.22.0-88c1ad3",
+    "drizzle-orm": "0.23.1",
     "eslint": "^8.36.0",
     "eslint-plugin-qwik": "^0.24.0",
     "postcss": "^8.4.21",
