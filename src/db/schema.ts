@@ -3,7 +3,7 @@ import { mysqlTable } from 'drizzle-orm/mysql-core/table';
 
 export const pins = mysqlTable('pins', {
   id: serial('id').primaryKey(),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
+  createdAt: timestamp('created_at').notNull().default(new Date()),
   regionId: text('region_id').notNull(),
   regionName: text('region_name').notNull(),
   regionMapWidth: int('region_map_width').notNull(),
