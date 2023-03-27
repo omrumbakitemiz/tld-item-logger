@@ -102,7 +102,6 @@ export default component$(() => {
             console.log('coordinate', pin.itemXCoordinate, pin.itemYCoordinate);
             const newXCoordinate = (cr.width / pin.regionMapWidth) * pin.itemXCoordinate;
             const newYCoordinate = (cr.height / pin.regionMapHeight) * pin.itemYCoordinate;
-            console.log('new coordinate', newXCoordinate, newYCoordinate);
             pin.itemXCoordinate = newXCoordinate;
             pin.itemYCoordinate = newYCoordinate;
             pin.regionMapWidth = cr.width;
@@ -215,8 +214,4 @@ export const head: DocumentHead = {
   ],
 };
 
-export const useGetAllPins = routeLoader$(async () => {
-  console.log('useGetAllPins running');
-  const result = await getAllPins();
-  return result;
-});
+export const useGetAllPins = routeLoader$(async () => await getAllPins());

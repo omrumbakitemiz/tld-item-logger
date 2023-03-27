@@ -19,7 +19,7 @@ export const insertPin = server$(async (newPin: NewPin) => {
   try {
     const result = await db.insert(pins).values(newPin);
 
-    console.log('insert result: ', result);
+    console.log(`insert result: ${result.rowsAffected} rows affected in ${result.time}ms`);
 
     return result;
   } catch (error) {
@@ -28,10 +28,11 @@ export const insertPin = server$(async (newPin: NewPin) => {
 });
 
 export const getAllPins = server$(async () => {
-  console.log('getting all pins');
-
   try {
+    const start = Date.now();
     const allPins = await db.select().from(pins);
+    const end = Date.now();
+    console.log(`get all pins took ${end - start}ms`);
     return allPins;
   } catch (error) {
     console.log('Error getting all pins: ' + error);
