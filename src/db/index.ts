@@ -1,5 +1,6 @@
 import { server$ } from '@builder.io/qwik-city';
 import { connect } from '@planetscale/database';
+import { eq } from 'drizzle-orm/mysql-core/expressions';
 import { drizzle } from 'drizzle-orm/planetscale-serverless';
 import type { NewPin } from '~/constants/data';
 import { pins } from './schema';
@@ -36,5 +37,27 @@ export const getAllPins = server$(async () => {
     return allPins;
   } catch (error) {
     console.log('Error getting all pins: ' + error);
+  }
+});
+
+export const getPinsByRegionId = server$(async (regionId: string) => {
+  try {
+    const start = Date.now();
+    const pinsByRegionId = await db.select().from(pins).where(eq(pins.regionId, regionId));
+    const end = Date.now();
+    console.log(`get pins by region id took ${end - start}ms`);
+    return pinsByRegionId;
+  } catch (error) {
+    console.log('Error getting pins by region id: ' + error);
+  }
+});
+
+export const deletePinsByRegionId = server$(async (regionId: string) => {
+  try {
+    const result = await db.delete(pins).where(eq(pins.regionId, regionId));
+    console.log(`delete pins result: ${result.rowsAffected} rows affected in ${result.time}ms`);
+    return result;
+  } catch (error) {
+    console.log('Error deleting pins: ' + error);
   }
 });
