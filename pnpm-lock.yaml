@@ -35,8 +35,8 @@ devDependencies:
     specifier: 0.17.1-609a4f0
     version: 0.17.1-609a4f0
   drizzle-orm:
-    specifier: 0.23.2
-    version: 0.23.2(@planetscale/database@1.6.0)
+    specifier: 0.23.4
+    version: 0.23.4(@planetscale/database@1.6.0)
   eslint:
     specifier: ^8.37.0
     version: 8.37.0
@@ -3697,11 +3697,12 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.23.2(@planetscale/database@1.6.0):
-    resolution: {integrity: sha512-GSOhOc+gGSMsf3eyBzL1Yb0g0M3pOurWmFI1lVhOrmMQCVuA/smJgYSy4UeTzBV521+J+emiFaSKSomEmc+fog==}
+  /drizzle-orm@0.23.4(@planetscale/database@1.6.0):
+    resolution: {integrity: sha512-fNTZPKQMWbE0Qy907GgBw/DJazGOBx+jHi1/0iaX8NVq7VvXt8w7ENOzh5LKpe/ld0I3f8M5x+oB8OXM7/d7eQ==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
+      '@libsql/client': '*'
       '@neondatabase/serverless': '>=0.1'
       '@planetscale/database': '>=1'
       '@types/better-sqlite3': '*'
@@ -3720,6 +3721,8 @@ packages:
       '@aws-sdk/client-rds-data':
         optional: true
       '@cloudflare/workers-types':
+        optional: true
+      '@libsql/client':
         optional: true
       '@neondatabase/serverless':
         optional: true
