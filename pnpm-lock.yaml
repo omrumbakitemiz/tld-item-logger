@@ -8,8 +8,8 @@ devDependencies:
     specifier: ^0.101.0
     version: 0.101.0(@builder.io/qwik@0.101.0)
   '@planetscale/database':
-    specifier: ^1.6.0
-    version: 1.6.0
+    specifier: ^1.7.0
+    version: 1.7.0
   '@tailwindcss/typography':
     specifier: ^0.5.9
     version: 0.5.9(tailwindcss@3.3.1)
@@ -35,8 +35,8 @@ devDependencies:
     specifier: 0.17.1-609a4f0
     version: 0.17.1-609a4f0
   drizzle-orm:
-    specifier: 0.23.6
-    version: 0.23.6(@planetscale/database@1.6.0)
+    specifier: 0.23.8
+    version: 0.23.8(@planetscale/database@1.7.0)
   eslint:
     specifier: ^8.37.0
     version: 8.37.0
@@ -2144,8 +2144,8 @@ packages:
       json-parse-even-better-errors: 2.3.1
     dev: true
 
-  /@planetscale/database@1.6.0:
-    resolution: {integrity: sha512-eb02567S706Xme/nVwx+EN/wyoHhHBXl1a7+67R/Xm91myEpLn0vZNl58TvLZztBxje4gga16lc8dLt0elNrJA==}
+  /@planetscale/database@1.7.0:
+    resolution: {integrity: sha512-lWR6biXChUyQnxsT4RT1CIeR3ZJvwTQXiQ+158MnY3VjLwjHEGakDzdH9kwUGPk6CHvu6UeqRXp1DgUOVHJFTw==}
     engines: {node: '>=16'}
     dev: true
 
@@ -3697,8 +3697,8 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.23.6(@planetscale/database@1.6.0):
-    resolution: {integrity: sha512-bVJS5elA/36J//s5K8P8oyB0YDZiTidBQQEUzTtp6As/i4GNvuskByG3e+2NfbmF5KH9e4WpWuavXf0iSLnQPg==}
+  /drizzle-orm@0.23.8(@planetscale/database@1.7.0):
+    resolution: {integrity: sha512-jdqS8+aiYWGI5ub4rhc2dEVqCeuYGF78m3XCVYVLaI2UzsKfhp/l3pretOsRMrzOSOM6naTB1BJugMY70VLv/w==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
@@ -3753,7 +3753,7 @@ packages:
       sqlite3:
         optional: true
     dependencies:
-      '@planetscale/database': 1.6.0
+      '@planetscale/database': 1.7.0
     dev: true
 
   /duplexify@3.7.1:
