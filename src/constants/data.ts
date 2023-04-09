@@ -77,7 +77,7 @@ export const items = [
   { id: '49', name: 'Old_mans_beard_lichen', imagePath: '/items/Old_mans_beard_lichen-low.webp', count: 0 },
   { id: '50', name: 'Stump_Remover', imagePath: '/items/Stump_Remover-low.webp', count: 0 },
   { id: '51', name: 'Dusting_Sulfur', imagePath: '/items/Dusting_Sulfur-low.webp', count: 0 },
-  { id: '51', name: 'Prepared_Birch_Bark', imagePath: '/items/Prepared_Birch_Bark-low.webp', count: 0 },
+  { id: '52', name: 'Prepared_Birch_Bark', imagePath: '/items/Prepared_Birch_Bark-low.webp', count: 0 },
   { id: '53', name: 'Survival_bow', imagePath: '/items/Survival_bow-low.webp', count: 0 },
   { id: '54', name: 'Emergency_stim', imagePath: '/items/Emergency_stim-low.webp', count: 0 },
   { id: '55', name: 'Prepared_reishi_mushrooms', imagePath: '/items/Prepared_reishi_mushrooms-low.webp', count: 0 },

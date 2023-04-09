@@ -11,7 +11,7 @@ const connection = connect({
   password: import.meta.env['VITE_DATABASE_PASSWORD'],
 });
 
-const db = drizzle(connection, { logger: import.meta.env.DEV && true });
+const db = drizzle(connection, { logger: import.meta.env.DEV && false });
 console.log(`drizzle db connection created now: ${new Date().toUTCString()}`);
 
 export const insertPin = server$(async (newPin: NewPin) => {
