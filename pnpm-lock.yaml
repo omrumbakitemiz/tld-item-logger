@@ -32,8 +32,8 @@ devDependencies:
     specifier: ^2.51.5
     version: 2.51.5(autoprefixer@10.4.14)(postcss@8.4.21)
   drizzle-kit:
-    specifier: 0.17.1-609a4f0
-    version: 0.17.1-609a4f0
+    specifier: 0.17.4
+    version: 0.17.4
   drizzle-orm:
     specifier: 0.23.10
     version: 0.23.10(@planetscale/database@1.7.0)
@@ -3680,8 +3680,8 @@ packages:
       wordwrap: 1.0.0
     dev: true
 
-  /drizzle-kit@0.17.1-609a4f0:
-    resolution: {integrity: sha512-bXflv8YQPe8gE+OSqllxVJEiwzupHjzu6tcBqfO4avrlspiP3shFJfDuHeiv+ztpKcG+8KXAuuFRIplJtD89LA==}
+  /drizzle-kit@0.17.4:
+    resolution: {integrity: sha512-9OuHsZBxS1IkWnF9vFeTWR5XH9UCv4SclfPaFt7he8TPVzDka5vpGmhNh9Oaj+OZg6Pf4PSV2Yt8X3c44ayHVA==}
     hasBin: true
     dependencies:
       camelcase: 7.0.1
@@ -3692,7 +3692,6 @@ packages:
       glob: 8.1.0
       hanji: 0.0.5
       json-diff: 0.9.0
-      minimatch: 7.4.3
       zod: 3.21.4
     transitivePeerDependencies:
       - supports-color
@@ -6422,13 +6421,6 @@ packages:
 
   /minimatch@5.1.6:
     resolution: {integrity: sha512-lKwV/1brpG6mBUFHtb7NUmtABCb2WZZmm2wNiOA5hAb8VdCS4B3dtMWyvcoViccwAW/COERjXLt0zP1zXUN26g==}
-    engines: {node: '>=10'}
-    dependencies:
-      brace-expansion: 2.0.1
-    dev: true
-
-  /minimatch@7.4.3:
-    resolution: {integrity: sha512-5UB4yYusDtkRPbRiy1cqZ1IpGNcJCGlEMG17RKzPddpyiPKoCdwohbED8g4QXT0ewCt8LTkQXuljsUfQ3FKM4A==}
     engines: {node: '>=10'}
     dependencies:
       brace-expansion: 2.0.1
