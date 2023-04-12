@@ -35,7 +35,7 @@
     "autoprefixer": "^10.4.14",
     "daisyui": "^2.51.5",
     "drizzle-kit": "0.17.1-609a4f0",
-    "drizzle-orm": "0.23.10",
+    "drizzle-orm": "0.23.11",
     "eslint": "^8.38.0",
     "eslint-plugin-qwik": "^0.101.0",
     "postcss": "^8.4.21",
@@ -43,8 +43,8 @@
     "tailwindcss": "^3.3.1",
     "typescript": "^5.0.4",
     "undici": "^5.21.2",
-    "vercel": "^28.18.4",
+    "vercel": "^28.18.5",
     "vite": "^4.2.1",
-    "vite-tsconfig-paths": "^4.1.0"
+    "vite-tsconfig-paths": "^4.2.0"
   }
 }
