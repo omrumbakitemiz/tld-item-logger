@@ -24,8 +24,8 @@
     "db:push": "pnpm drizzle-kit push:mysql --config ./drizzle.config.ts"
   },
   "devDependencies": {
-    "@builder.io/qwik": "^0.101.0",
-    "@builder.io/qwik-city": "^0.101.0",
+    "@builder.io/qwik": "^0.102.0",
+    "@builder.io/qwik-city": "^0.102.0",
     "@planetscale/database": "^1.7.0",
     "@tailwindcss/typography": "^0.5.9",
     "@types/eslint": "^8.37.0",
@@ -35,9 +35,9 @@
     "autoprefixer": "^10.4.14",
     "daisyui": "^2.51.5",
     "drizzle-kit": "0.17.1-609a4f0",
-    "drizzle-orm": "0.23.11",
+    "drizzle-orm": "0.23.13",
     "eslint": "^8.38.0",
-    "eslint-plugin-qwik": "^0.101.0",
+    "eslint-plugin-qwik": "^0.102.0",
     "postcss": "^8.4.21",
     "prettier": "2.8.7",
     "tailwindcss": "^3.3.1",
