@@ -35,8 +35,8 @@ devDependencies:
     specifier: 0.17.1-609a4f0
     version: 0.17.1-609a4f0
   drizzle-orm:
-    specifier: 0.24.5
-    version: 0.24.5(@planetscale/database@1.7.0)
+    specifier: 0.25.0
+    version: 0.25.0(@planetscale/database@1.7.0)
   eslint:
     specifier: ^8.39.0
     version: 8.39.0
@@ -3728,8 +3728,8 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.24.5(@planetscale/database@1.7.0):
-    resolution: {integrity: sha512-TK9EBw7NMZt1NbH3MvZkRKDbkyxZw/epBeCmcaFb3mhm9DeCTX6B0eDYGDWSEhjvwgtdhHEhM8/KXmODTjPfAw==}
+  /drizzle-orm@0.25.0(@planetscale/database@1.7.0):
+    resolution: {integrity: sha512-+gKN/aVxLgMrPFh+1gQN/oJr0YR7+8kFHyGrmLj3EZS4pmL4ibUY1dGhYTSGCQBt69zDpQN16juC0+q8cF5r0Q==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'

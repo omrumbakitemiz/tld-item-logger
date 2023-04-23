@@ -1,5 +1,4 @@
-import { int, serial, text, timestamp } from 'drizzle-orm/mysql-core/columns';
-import { mysqlTable } from 'drizzle-orm/mysql-core/table';
+import { int, mysqlTable, serial, text, timestamp } from 'drizzle-orm/mysql-core';
 
 export const pins = mysqlTable('pins', {
   id: serial('id').primaryKey(),

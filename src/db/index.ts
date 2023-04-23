@@ -1,6 +1,6 @@
 import { server$ } from '@builder.io/qwik-city';
 import { connect } from '@planetscale/database';
-import { eq } from 'drizzle-orm/mysql-core/expressions';
+import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/planetscale-serverless';
 import type { NewPin } from '~/constants/data';
 import { pins } from './schema';
