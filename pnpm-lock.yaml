@@ -2,8 +2,8 @@ lockfileVersion: '6.0'
 
 devDependencies:
   '@builder.io/qwik':
-    specifier: ^0.106.0
-    version: 0.106.0(undici@5.22.0)
+    specifier: ^0.107.0
+    version: 0.107.0(undici@5.22.0)
   '@builder.io/qwik-city':
     specifier: ^0.106.0
     version: 0.106.0
@@ -1297,8 +1297,8 @@ packages:
       - supports-color
     dev: true
 
-  /@builder.io/qwik@0.106.0(undici@5.22.0):
-    resolution: {integrity: sha512-uBQIgEJQqiH0XBvVu8n+rxHjsx25PuVMBhQmTBW9b0fRg1Aq+isN/aDRIFm2qUNlW3aQaaf1R8cNjTOn13osMw==}
+  /@builder.io/qwik@0.107.0(undici@5.22.0):
+    resolution: {integrity: sha512-YcLvM4sW69rKbK+tcOm60+rvbH7j/b3x2m3+dhGQOgyGMWw8WqoCAmr5clF5xONM0pCaOkrh6I3SncRedXFBYw==}
     engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
     hasBin: true
     peerDependencies:
