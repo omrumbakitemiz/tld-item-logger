@@ -5,8 +5,8 @@ devDependencies:
     specifier: ^0.106.0
     version: 0.106.0(undici@5.22.0)
   '@builder.io/qwik-city':
-    specifier: ^0.106.0
-    version: 0.106.0
+    specifier: ^0.107.0
+    version: 0.107.0
   '@planetscale/database':
     specifier: ^1.7.0
     version: 1.7.0
@@ -1284,8 +1284,8 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@builder.io/qwik-city@0.106.0:
-    resolution: {integrity: sha512-jrK/gG1QnOgl43T+L+CsmmoDxQAn24jy+xBmMMj8YfwGooKKXMVPZcTFf+cXVUj0GzcW+P87ZR5yqvCwVYZArQ==}
+  /@builder.io/qwik-city@0.107.0:
+    resolution: {integrity: sha512-t64cq3dwhWdCC9ZJhbJ1G4cbnNzjudHBkx/u0qbr6yLP8V6oRk2eJ5iPLq3R5pUqpbonRQUm4PokYB0mJK1Lwg==}
     engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
     dependencies:
       '@mdx-js/mdx': 2.3.0
