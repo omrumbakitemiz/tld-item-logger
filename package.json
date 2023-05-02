@@ -24,8 +24,8 @@
     "db:push": "pnpm drizzle-kit push:mysql --config ./drizzle.config.ts"
   },
   "devDependencies": {
-    "@builder.io/qwik": "^0.107.0",
-    "@builder.io/qwik-city": "^0.107.0",
+    "@builder.io/qwik": "^1.0.0",
+    "@builder.io/qwik-city": "^1.0.0",
     "@planetscale/database": "^1.7.0",
     "@tailwindcss/typography": "^0.5.9",
     "@types/eslint": "^8.37.0",
@@ -37,14 +37,14 @@
     "drizzle-kit": "0.17.6-76e73f3",
     "drizzle-orm": "0.25.4",
     "eslint": "^8.39.0",
-    "eslint-plugin-qwik": "^0.107.0",
+    "eslint-plugin-qwik": "^1.0.0",
     "postcss": "^8.4.23",
     "prettier": "2.8.8",
     "tailwindcss": "^3.3.2",
     "typescript": "^5.0.4",
     "undici": "^5.22.0",
     "vercel": "^29.0.3",
-    "vite": "^4.3.3",
+    "vite": "^4.3.4",
     "vite-tsconfig-paths": "^4.2.0"
   }
 }
