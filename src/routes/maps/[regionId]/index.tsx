@@ -171,8 +171,8 @@ export default component$(() => {
               onDrop$={(event: any) => drop(event)}
               onDragOver$={(event) => allowDrop(event)}
               src={regions[Number(loc.params.regionId)].imagePath}
-              width="650px"
-              height="750px"
+              width="650"
+              height="750"
               alt="map-image"
               onLoad$={upgradeMapImage}
               ref={regionMapRef}
@@ -208,8 +208,8 @@ export default component$(() => {
                     draggable={true}
                     src={item.imagePath}
                     alt="item-image"
-                    width="50px"
-                    height="50px"
+                    width="50"
+                    height="50"
                     onDragStart$={(event: any) => onDragStart(event, item)}
                   />
                 </button>
