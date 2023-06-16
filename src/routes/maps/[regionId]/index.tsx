@@ -224,6 +224,8 @@ export default component$(() => {
               onClick$={async () => {
                 if (confirm('Are you sure you want to clear the map?')) {
                   await deletePinsByRegionId(loc.params.regionId);
+
+                  navigate();
                 }
               }}
             >
