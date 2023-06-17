@@ -5,8 +5,8 @@ export default component$(() => {
   return (
     <div class="text-center mt-5 text-xl">
       Please go to &nbsp;
-      <a href="/maps">
-        <code class="text-blue-400">/maps</code>
+      <a href="/maps/1">
+        <code class="text-blue-400">/maps/1</code>
       </a>
       &nbsp; route to start using the app.
     </div>
