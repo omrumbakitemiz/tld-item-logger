@@ -40,6 +40,8 @@ export default component$(() => {
 
   const pinStore = useStore<{ pins: NewPin[] }>({ pins: [] });
 
+  const itemStore = useStore<{ items: Item[] }>({ items: items });
+
   const currentDragItem = useSignal<Item>();
 
   const currentRegionMapQuality = useSignal<'low' | 'high'>('low');
@@ -118,9 +120,7 @@ export default component$(() => {
     return () => ro.disconnect();
   });
 
-  useVisibleTask$(({ track }) => {
-    track(() => pinStore.pins.length);
-
+  const rerenderPins = $((pins: NewPin[]) => {
     const mapImageElement = document.getElementById('map-image') as HTMLImageElement;
 
     if (mapImageElement) {
@@ -128,10 +128,24 @@ export default component$(() => {
       // todo: refactor this to be more efficient, maybe only add new pins instead of clearing the map and re-adding all pins
       clearMap(mapImageElement);
 
-      pinStore.pins.forEach((pin) => {
+      pins.forEach((pin) => {
         mapImageElement.appendChild(generateImageElement(pin));
       });
     }
+  });
+
+  useVisibleTask$(({ track }) => {
+    track(() => pinStore.pins.length);
+
+    rerenderPins(pinStore.pins);
+  });
+
+  useVisibleTask$(({ track }) => {
+    track(() => itemStore.items.length);
+
+    const pins = pinStore.pins.filter((pin) => itemStore.items.find((item) => item.id === pin.itemId));
+
+    rerenderPins(pins);
   });
 
   useTask$(({ track }) => {
@@ -142,11 +156,22 @@ export default component$(() => {
     }
   });
 
+  const itemSearchInput = $((event: InputEvent) => {
+    const searchValue = (event.target as HTMLInputElement).value;
+    if (searchValue) {
+      const filteredItems = items.filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase()));
+      if (filteredItems) {
+        itemStore.items = filteredItems;
+      }
+    } else {
+      itemStore.items = items;
+    }
+  });
+
   return (
     <>
       <div class="flex justify-between px-6 py-4">
         <div>
-          {/* Map Selection */}
           <select
             class="select w-full bg-gray-800"
             onChange$={(event) => {
@@ -164,7 +189,6 @@ export default component$(() => {
               </option>
             ))}
           </select>
-          {/* Map Area */}
 
           <div class="cursor-pointer relative w-[650px] h-[750px]" id="map-image">
             <img
@@ -197,11 +221,19 @@ export default component$(() => {
             </span>
           </p>
         </div>
-        {/* Item Area */}
 
         <div class="flex flex-col mt-1">
-          <div class="grid grid-cols-3 gap-4 max-w-[300px] max-h-[650px] overflow-y-scroll overflow-x-hidden px-2 mt-8">
-            {items.map((item) => (
+          <div class="w-full">
+            <input
+              type="search"
+              placeholder="hammer, axe, etc."
+              class="input input-bordered input-info w-full max-w-xs"
+              onInput$={itemSearchInput}
+            />
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 w-80 max-h-[650px] overflow-y-scroll overflow-x-hidden px-2 mt-8">
+            {itemStore.items.map((item) => (
               <div class="tooltip" data-tip={item.name} key={item.id}>
                 <button class="btn">
                   <img
@@ -217,7 +249,7 @@ export default component$(() => {
             ))}
           </div>
 
-          <div class="mt-16 flex justify-end">
+          <div class="mt-10 flex justify-center">
             <button
               class="btn btn-error btn-xs"
               type="button"
