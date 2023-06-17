@@ -120,9 +120,7 @@ export default component$(() => {
     return () => ro.disconnect();
   });
 
-  useVisibleTask$(({ track }) => {
-    track(() => pinStore.pins.length);
-
+  const rerenderPins = $((pins: NewPin[]) => {
     const mapImageElement = document.getElementById('map-image') as HTMLImageElement;
 
     if (mapImageElement) {
@@ -130,10 +128,24 @@ export default component$(() => {
       // todo: refactor this to be more efficient, maybe only add new pins instead of clearing the map and re-adding all pins
       clearMap(mapImageElement);
 
-      pinStore.pins.forEach((pin) => {
+      pins.forEach((pin) => {
         mapImageElement.appendChild(generateImageElement(pin));
       });
     }
+  });
+
+  useVisibleTask$(({ track }) => {
+    track(() => pinStore.pins.length);
+
+    rerenderPins(pinStore.pins);
+  });
+
+  useVisibleTask$(({ track }) => {
+    track(() => itemStore.items.length);
+
+    const pins = pinStore.pins.filter((pin) => itemStore.items.find((item) => item.id === pin.itemId));
+
+    rerenderPins(pins);
   });
 
   useTask$(({ track }) => {
