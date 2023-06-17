@@ -195,6 +195,7 @@ export default component$(() => {
               onDrop$={(event: any) => drop(event)}
               onDragOver$={(event) => allowDrop(event)}
               src={regions[Number(loc.params.regionId)].imagePath}
+              id={regions[Number(loc.params.regionId)].id}
               width="650"
               height="750"
               alt="map-image"
@@ -232,7 +233,10 @@ export default component$(() => {
             />
           </div>
 
-          <div class="grid grid-cols-3 gap-4 w-80 max-h-[650px] overflow-y-scroll overflow-x-hidden px-2 mt-8">
+          <div
+            data-testid="items"
+            class="grid grid-cols-3 gap-4 w-80 max-h-[650px] overflow-y-scroll overflow-x-hidden px-2 mt-8"
+          >
             {itemStore.items.map((item) => (
               <div class="tooltip" data-tip={item.name} key={item.id}>
                 <button class="btn">
