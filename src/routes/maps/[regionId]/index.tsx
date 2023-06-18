@@ -171,6 +171,53 @@ export default component$(() => {
   return (
     <>
       <div class="flex justify-between px-6 py-4">
+        <div class="flex flex-col mt-1">
+          <div class="w-full">
+            <input
+              type="search"
+              placeholder="hammer, axe, etc."
+              class="input input-bordered input-info w-full max-w-xs"
+              onInput$={itemSearchInput}
+            />
+          </div>
+
+          <div
+            data-testid="items"
+            class="grid grid-cols-4 gap-6 w-full max-h-[650px] overflow-y-scroll overflow-x-hidden px-2 mt-8"
+          >
+            {itemStore.items.map((item) => (
+              <div class="tooltip" data-tip={item.name} key={item.id}>
+                <button class="btn w-20 h-20">
+                  <img
+                    draggable={true}
+                    src={item.imagePath}
+                    alt="item-image"
+                    width="50"
+                    height="50"
+                    onDragStart$={(event: any) => onDragStart(event, item)}
+                  />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div class="mt-10 flex justify-center">
+            <button
+              class="btn btn-error btn-xs"
+              type="button"
+              onClick$={async () => {
+                if (confirm('Are you sure you want to clear the map?')) {
+                  await deletePinsByRegionId(loc.params.regionId);
+
+                  navigate();
+                }
+              }}
+            >
+              ❗Clear Map❗
+            </button>
+          </div>
+        </div>
+
         <div>
           <select
             class="select w-full bg-gray-800"
@@ -221,53 +268,6 @@ export default component$(() => {
               {currentRegionMapQuality.value}
             </span>
           </p>
-        </div>
-
-        <div class="flex flex-col mt-1">
-          <div class="w-full">
-            <input
-              type="search"
-              placeholder="hammer, axe, etc."
-              class="input input-bordered input-info w-full max-w-xs"
-              onInput$={itemSearchInput}
-            />
-          </div>
-
-          <div
-            data-testid="items"
-            class="grid grid-cols-3 gap-4 w-80 max-h-[650px] overflow-y-scroll overflow-x-hidden px-2 mt-8"
-          >
-            {itemStore.items.map((item) => (
-              <div class="tooltip" data-tip={item.name} key={item.id}>
-                <button class="btn">
-                  <img
-                    draggable={true}
-                    src={item.imagePath}
-                    alt="item-image"
-                    width="50"
-                    height="50"
-                    onDragStart$={(event: any) => onDragStart(event, item)}
-                  />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <div class="mt-10 flex justify-center">
-            <button
-              class="btn btn-error btn-xs"
-              type="button"
-              onClick$={async () => {
-                if (confirm('Are you sure you want to clear the map?')) {
-                  await deletePinsByRegionId(loc.params.regionId);
-
-                  navigate();
-                }
-              }}
-            >
-              ❗Clear Map❗
-            </button>
-          </div>
         </div>
       </div>
     </>
