@@ -256,22 +256,28 @@ export default component$(() => {
 
           {/* if is vercel env do not show this info */}
           {import.meta.env.VITE_VERCEL_ENV !== 'production' && (
-            <>
-              <p>
+            <div class="border border-gray-500 p-4 divide-y divide-blue-300 text-center">
+              <p class="text-lg font-semibold text-blue-600">**** DEBUG ****</p>
+
+              <p class="p-2">
                 pin count: <span>{pinStore.pins?.length}</span>
               </p>
 
-              <p>
-                pin [] : <span>{JSON.stringify(pinStore.pins.map((pin) => pin.itemName))}</span>
-              </p>
+              <div class="p-1">
+                {pinStore.pins.map((pin) => (
+                  <div class="py-1" key={pin.id}>
+                    {pin.itemName}
+                  </div>
+                ))}
+              </div>
 
-              <p>
+              <p class="p-2">
                 currentMapImage quality:{' '}
                 <span class={currentRegionMapQuality.value === 'high' ? 'text-green-500' : 'text-red-500'}>
                   {currentRegionMapQuality.value}
                 </span>
               </p>
-            </>
+            </div>
           )}
         </div>
       </div>
