@@ -254,20 +254,25 @@ export default component$(() => {
 
           <br />
 
-          <p>
-            pin count: <span>{pinStore.pins?.length}</span>
-          </p>
+          {/* if is vercel env do not show this info */}
+          {import.meta.env.VITE_VERCEL_ENV !== 'production' && (
+            <>
+              <p>
+                pin count: <span>{pinStore.pins?.length}</span>
+              </p>
 
-          <p>
-            pin [] : <span>{JSON.stringify(pinStore.pins.map((pin) => pin.itemName))}</span>
-          </p>
+              <p>
+                pin [] : <span>{JSON.stringify(pinStore.pins.map((pin) => pin.itemName))}</span>
+              </p>
 
-          <p>
-            currentMapImage quality:{' '}
-            <span class={currentRegionMapQuality.value === 'high' ? 'text-green-500' : 'text-red-500'}>
-              {currentRegionMapQuality.value}
-            </span>
-          </p>
+              <p>
+                currentMapImage quality:{' '}
+                <span class={currentRegionMapQuality.value === 'high' ? 'text-green-500' : 'text-red-500'}>
+                  {currentRegionMapQuality.value}
+                </span>
+              </p>
+            </>
+          )}
         </div>
       </div>
     </>
