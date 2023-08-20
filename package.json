@@ -31,6 +31,7 @@
     "@planetscale/database": "^1.10.0",
     "@playwright/test": "^1.37.1",
     "@radix-ui/react-icons": "^1.3.0",
+    "@radix-ui/react-slot": "^1.0.2",
     "@tailwindcss/typography": "^0.5.9",
     "@types/eslint": "^8.44.2",
     "@types/node": "^20.5.1",
