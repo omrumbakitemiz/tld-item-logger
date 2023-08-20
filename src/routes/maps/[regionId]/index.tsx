@@ -3,7 +3,7 @@ import { routeLoader$, useLocation, useNavigate, type DocumentHead } from '@buil
 import type { Item, NewPin } from '~/constants/data';
 import { items, regions } from '~/constants/data';
 import { deletePinsByRegionId, getPinsByRegionId, insertPin } from '~/db';
-import { debounce } from '~/utils';
+import { debounce } from '~/lib/utils';
 
 const clearMap = (mapImageElement: HTMLImageElement) => {
   const childNodes = Array.from(mapImageElement.childNodes) as HTMLElement[];

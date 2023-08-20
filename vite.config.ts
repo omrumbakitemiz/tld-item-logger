@@ -1,6 +1,7 @@
 import { qwikCity } from '@builder.io/qwik-city/vite';
 import { qwikReact } from '@builder.io/qwik-react/vite';
 import { qwikVite } from '@builder.io/qwik/optimizer';
+import path from 'path';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import packageJson from './package.json';
@@ -16,5 +17,10 @@ export default defineConfig(() => {
     define: {
       'import.meta.env.PACKAGE_VERSION': JSON.stringify(packageJson.version),
     },
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+      }
+    }
   };
 });
