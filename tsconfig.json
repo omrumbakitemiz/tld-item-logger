@@ -22,5 +22,12 @@
     }
   },
   "files": ["./.eslintrc.cjs"],
-  "include": ["src", "./package.json", "./vite-env.d.ts", "./drizzle.config.ts"]
+  "include": [
+    "src",
+    "./package.json",
+    "./vite-env.d.ts",
+    "./drizzle.config.ts",
+    "./tailwind.config.js",
+    "./playwright.config.ts"
+  ]
 }

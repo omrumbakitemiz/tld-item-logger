@@ -45,3 +45,7 @@ lerna-debug.log*
 .env.*
 !.env.example
 !.env.example.local
+
+# Output
+test-results
+playwright-report

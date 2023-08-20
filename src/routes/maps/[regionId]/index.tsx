@@ -3,7 +3,7 @@ import { routeLoader$, useLocation, useNavigate, type DocumentHead } from '@buil
 import type { Item, NewPin } from '~/constants/data';
 import { items, regions } from '~/constants/data';
 import { deletePinsByRegionId, getPinsByRegionId, insertPin } from '~/db';
-import { debounce } from '~/utils';
+import { debounce } from '~/lib/utils';
 
 const clearMap = (mapImageElement: HTMLImageElement) => {
   const childNodes = Array.from(mapImageElement.childNodes) as HTMLElement[];
@@ -39,6 +39,8 @@ export default component$(() => {
   const allPins = useGetAllPins();
 
   const pinStore = useStore<{ pins: NewPin[] }>({ pins: [] });
+
+  const itemStore = useStore<{ items: Item[] }>({ items: items });
 
   const currentDragItem = useSignal<Item>();
 
@@ -118,9 +120,7 @@ export default component$(() => {
     return () => ro.disconnect();
   });
 
-  useVisibleTask$(({ track }) => {
-    track(() => pinStore.pins.length);
-
+  const rerenderPins = $((pins: NewPin[]) => {
     const mapImageElement = document.getElementById('map-image') as HTMLImageElement;
 
     if (mapImageElement) {
@@ -128,10 +128,24 @@ export default component$(() => {
       // todo: refactor this to be more efficient, maybe only add new pins instead of clearing the map and re-adding all pins
       clearMap(mapImageElement);
 
-      pinStore.pins.forEach((pin) => {
+      pins.forEach((pin) => {
         mapImageElement.appendChild(generateImageElement(pin));
       });
     }
+  });
+
+  useVisibleTask$(({ track }) => {
+    track(() => pinStore.pins.length);
+
+    rerenderPins(pinStore.pins);
+  });
+
+  useVisibleTask$(({ track }) => {
+    track(() => itemStore.items.length);
+
+    const pins = pinStore.pins.filter((pin) => itemStore.items.find((item) => item.id === pin.itemId));
+
+    rerenderPins(pins);
   });
 
   useTask$(({ track }) => {
@@ -142,11 +156,69 @@ export default component$(() => {
     }
   });
 
+  const itemSearchInput = $((event: InputEvent) => {
+    const searchValue = (event.target as HTMLInputElement).value;
+    if (searchValue) {
+      const filteredItems = items.filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase()));
+      if (filteredItems) {
+        itemStore.items = filteredItems;
+      }
+    } else {
+      itemStore.items = items;
+    }
+  });
+
   return (
     <>
       <div class="flex justify-between px-6 py-4">
+        <div class="flex flex-col mt-1">
+          <div class="w-full">
+            <input
+              type="search"
+              placeholder="hammer, axe, etc."
+              class="input input-bordered input-info w-full max-w-xs"
+              onInput$={itemSearchInput}
+            />
+          </div>
+
+          <div
+            data-testid="items"
+            class="grid grid-cols-4 gap-6 w-full max-h-[650px] overflow-y-scroll overflow-x-hidden px-2 mt-8"
+          >
+            {itemStore.items.map((item) => (
+              <div class="tooltip" data-tip={item.name} key={item.id}>
+                <button class="btn w-20 h-20">
+                  <img
+                    draggable={true}
+                    src={item.imagePath}
+                    alt="item-image"
+                    width="50"
+                    height="50"
+                    onDragStart$={(event: any) => onDragStart(event, item)}
+                  />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div class="mt-10 flex justify-center">
+            <button
+              class="btn btn-error btn-xs"
+              type="button"
+              onClick$={async () => {
+                if (confirm('Are you sure you want to clear the map?')) {
+                  await deletePinsByRegionId(loc.params.regionId);
+
+                  navigate();
+                }
+              }}
+            >
+              ❗Clear Map❗
+            </button>
+          </div>
+        </div>
+
         <div>
-          {/* Map Selection */}
           <select
             class="select w-full bg-gray-800"
             onChange$={(event) => {
@@ -164,15 +236,15 @@ export default component$(() => {
               </option>
             ))}
           </select>
-          {/* Map Area */}
 
           <div class="cursor-pointer relative w-[650px] h-[750px]" id="map-image">
             <img
               onDrop$={(event: any) => drop(event)}
               onDragOver$={(event) => allowDrop(event)}
               src={regions[Number(loc.params.regionId)].imagePath}
-              width="650px"
-              height="750px"
+              id={regions[Number(loc.params.regionId)].id}
+              width="650"
+              height="750"
               alt="map-image"
               onLoad$={upgradeMapImage}
               ref={regionMapRef}
@@ -182,54 +254,31 @@ export default component$(() => {
 
           <br />
 
-          <p>
-            pin count: <span>{pinStore.pins?.length}</span>
-          </p>
+          {/* if is vercel env do not show this info */}
+          {import.meta.env.VITE_VERCEL_ENV !== 'production' && (
+            <div class="border border-gray-500 p-4 divide-y divide-blue-300 text-center">
+              <p class="text-lg font-semibold text-blue-600">**** DEBUG ****</p>
 
-          <p>
-            pin [] : <span>{JSON.stringify(pinStore.pins.map((pin) => pin.itemName))}</span>
-          </p>
+              <p class="p-2">
+                pin count: <span>{pinStore.pins?.length}</span>
+              </p>
 
-          <p>
-            currentMapImage quality:{' '}
-            <span class={currentRegionMapQuality.value === 'high' ? 'text-green-500' : 'text-red-500'}>
-              {currentRegionMapQuality.value}
-            </span>
-          </p>
-        </div>
-        {/* Item Area */}
-
-        <div class="flex flex-col mt-1">
-          <div class="grid grid-cols-3 gap-4 max-w-[300px] max-h-[650px] overflow-y-scroll overflow-x-hidden px-2 mt-8">
-            {items.map((item) => (
-              <div class="tooltip" data-tip={item.name} key={item.id}>
-                <button class="btn">
-                  <img
-                    draggable={true}
-                    src={item.imagePath}
-                    alt="item-image"
-                    width="50px"
-                    height="50px"
-                    onDragStart$={(event: any) => onDragStart(event, item)}
-                  />
-                </button>
+              <div class="p-1">
+                {pinStore.pins.map((pin) => (
+                  <div class="py-1" key={pin.id}>
+                    {pin.itemName}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          <div class="mt-16 flex justify-end">
-            <button
-              class="btn btn-error btn-xs"
-              type="button"
-              onClick$={async () => {
-                if (confirm('Are you sure you want to clear the map?')) {
-                  await deletePinsByRegionId(loc.params.regionId);
-                }
-              }}
-            >
-              ❗Clear Map❗
-            </button>
-          </div>
+              <p class="p-2">
+                currentMapImage quality:{' '}
+                <span class={currentRegionMapQuality.value === 'high' ? 'text-green-500' : 'text-red-500'}>
+                  {currentRegionMapQuality.value}
+                </span>
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </>
