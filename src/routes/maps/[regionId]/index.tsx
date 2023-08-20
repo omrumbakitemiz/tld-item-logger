@@ -16,7 +16,7 @@ const clearMap = (mapImageElement: HTMLImageElement) => {
 
 const allowDrop = (event: any) => event.preventDefault();
 
-const generateImageElement = (pin: NewPin) => {
+const generateImageElement = (pin: NewPin, index: number) => {
   const img = document.createElement('img');
   img.style.position = 'absolute';
   img.draggable = true;
@@ -29,6 +29,52 @@ const generateImageElement = (pin: NewPin) => {
   img.src = pin.itemImagePath;
   img.style.borderRadius = '50%';
   img.style.zIndex = '1000';
+  img.style.cursor = 'pointer';
+  img.style.border = '1px solid transparent';
+
+  // add special property for finding this element later using pin.id
+  img.setAttribute('data-pin-id', index.toString());
+
+  // add event handle for clicking on pin image
+  img.addEventListener('click', () => {
+    // if pin is clicked, scroll to the item in the list
+    // const itemElement = document.querySelector(`[data-tip="${pin.itemName}"]`);
+
+    // if (itemElement) {
+    //   itemElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    //   // wait for the scroll to finish
+    //   setTimeout(() => {
+    //     // add some zooming effect to the item element after scrolling to it
+    //     itemElement.animate(
+    //       [
+    //         // keyframes
+    //         { transform: 'scale(1)' },
+    //         { transform: 'scale(1.5)' },
+    //         { transform: 'scale(1)' },
+    //       ],
+    //       {
+    //         // timing options
+    //         duration: 750,
+    //       },
+    //     );
+    //   }, 1000);
+    // }
+
+    // remove old border from all pins
+    const allPinElements = document.querySelectorAll('[data-pin-id]');
+    allPinElements.forEach((pinElement) => {
+      if (pinElement && pinElement instanceof HTMLImageElement) {
+        pinElement.style.border = '1px solid transparent';
+      }
+    });
+
+    const pinElement = document.querySelector(`[data-pin-id="${index}"]`);
+    if (pinElement && pinElement instanceof HTMLImageElement) {
+      pinElement.style.border = '1px solid red';
+    }
+  });
+
   return img;
 };
 
@@ -128,8 +174,8 @@ export default component$(() => {
       // todo: refactor this to be more efficient, maybe only add new pins instead of clearing the map and re-adding all pins
       clearMap(mapImageElement);
 
-      pins.forEach((pin) => {
-        mapImageElement.appendChild(generateImageElement(pin));
+      pins.forEach((pin, index) => {
+        mapImageElement.appendChild(generateImageElement(pin, index));
       });
     }
   });
@@ -220,7 +266,7 @@ export default component$(() => {
 
         <div>
           <select
-            class="select w-full bg-gray-800"
+            class="select w-full"
             onChange$={(event) => {
               const region = regions.find((region) => region.id === event.target.value);
               if (region) {
@@ -237,7 +283,7 @@ export default component$(() => {
             ))}
           </select>
 
-          <div class="cursor-pointer relative w-[650px] h-[750px]" id="map-image">
+          <div class="relative w-[650px] h-[750px]" id="map-image">
             <img
               onDrop$={(event: any) => drop(event)}
               onDragOver$={(event) => allowDrop(event)}
