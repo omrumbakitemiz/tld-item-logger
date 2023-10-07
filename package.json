@@ -38,7 +38,7 @@
     "daisyui": "^3.7.3",
     "drizzle-kit": "^0.18.0-27440c3",
     "drizzle-orm": "0.28.6",
-    "eslint": "8.45.0",
+    "eslint": "8.51.0",
     "eslint-plugin-qwik": "^1.2.10",
     "postcss": "^8.4.29",
     "prettier": "3.0.3",
